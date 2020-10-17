@@ -31,13 +31,11 @@ public class LegitmapV1 {
 
 
 
+    public DcMotor Wheeloutake = null;
 
-    public DcMotor WheelIntakeR = null;
-    public DcMotor WheelIntakeL = null;
-
-    public DcMotor WheelOutake = null;
+    public DcMotor Intake = null;
     public Servo Wgoalservo = null;
-
+    public Servo Backservo = null;
 
     public ColorSensor colorSensor = null;
 
@@ -59,7 +57,7 @@ public class LegitmapV1 {
 
     static final double COUNTS_PER_MOTOR_REV = 2240;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 0.37727198;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+    static final double WHEEL_DIAMETER_INCHES = 3.85;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double Circumference = 62.1;
@@ -73,7 +71,7 @@ public class LegitmapV1 {
     /* local OpMode members. */
     HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
-    private DcMotor Autoarm;
+
 
 
     /* Constructor */
@@ -88,19 +86,19 @@ public class LegitmapV1 {
         FrontLeft = hwMap.get(DcMotor.class, "FL");
         BackRight = hwMap.get(DcMotor.class, "BR");
         BackLeft = hwMap.get(DcMotor.class, "BL");
+        Intake = hwMap.get(DcMotor.class,"I");
+        Wheeloutake = hwMap.get(DcMotor.class, "WO");
 
-        Autoarm = hwMap.get(DcMotor.class, "Autoarm");
 
 
-        WheelIntakeL = hwMap.get(DcMotor.class,"WIL");
-        WheelIntakeR = hwMap.get(DcMotor.class,"WIR");
-        WheelOutake  = hwMap.get(DcMotor.class,"WO");
+
+
 
 
         // Define and initialize ALL installed servos.
 
         Wgoalservo = hwMap.get(Servo.class, "WS");
-
+        Backservo = hwMap.get(Servo.class, "BS");
 
 
 
