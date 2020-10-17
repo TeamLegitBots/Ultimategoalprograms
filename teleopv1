@@ -1,0 +1,136 @@
+TeleopV4.java
+Earlier this year
+Feb 28
+
+Akhilesh Basetty uploaded an item
+Java
+TeleopV4.java
+package org.firstinspires.ftc.teamcode.team16535;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
+
+
+@TeleOp(name = "TeleopV4")
+//@Disabled
+public class TeleopV4 extends LinearOpMode {
+
+    LegitPushBotV4 robot = new LegitPushBotV4();
+
+
+    Servo pincher;
+    CRServo elevator;
+    Servo foundation;
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+
+        robot.init(hardwareMap);
+        pincher = hardwareMap.get(Servo.class, "pincher");
+        foundation = hardwareMap.get(Servo.class, "FSR");
+
+        double Close_Servo = 1;
+        double Open_Servo = 0;
+
+        double sensitivity = .4;
+
+        waitForStart();
+
+
+        while (opModeIsActive()) {
+
+            // Code for the four drive motors
+            float drive = -gamepad1.left_stick_y;
+            float strafe = gamepad1.left_stick_x;
+            float turn = gamepad1.right_stick_x;
+
+
+
+            float FR = drive - strafe - turn;
+            float FL = drive + strafe + turn;
+            float BR = drive + strafe - turn;
+            float BL = drive - strafe + turn;
+
+
+            robot.FrontRight.setPower(sensitivity * FR * LegitPushBotV4.FR);
+            robot.FrontLeft.setPower(sensitivity * FL * LegitPushBotV4.FL);
+            robot.BackRight.setPower(sensitivity * BR * LegitPushBotV4.BR);
+            robot.BackLeft.setPower(sensitivity * BL * LegitPushBotV4.BL);
+
+
+            // Lower servos to latch on to the foundation
+            if (gamepad1.right_bumper) {
+
+                foundation.setPosition(Close_Servo);
+
+            }
+
+            // Pull servos up to unlatch from the foundation
+            if (gamepad1.left_bumper) {
+
+                foundation.setPosition(Open_Servo);
+
+            }
+
+            // Close the pincher
+            if (gamepad1.y) {
+                pincher.setPosition(Close_Servo);
+            }
+
+            // Open the pincher
+            if (gamepad1.a) {
+                pincher.setPosition(Open_Servo);
+            }
+
+            // Pull the sparkmini system up
+            if (gamepad1.right_trigger != 0) {
+
+                robot.WheelIntakeL.setPower(gamepad1.right_trigger);
+                robot.WheelIntakeR.setPower(-gamepad1.right_trigger);
+
+            }
+
+            // Drag the sparkmini system down
+            if (gamepad1.left_trigger != 0) {
+
+                robot.WheelIntakeL.setPower(-gamepad1.left_trigger);
+                robot.WheelIntakeR.setPower(gamepad1.left_trigger);
+
+            }
+
+            // Stop if not linear motion kit input
+            if(gamepad1.left_trigger == 0 && gamepad1.right_trigger == 0) {
+
+                robot.WheelIntakeL.setPower(0);
+                robot.WheelIntakeR.setPower(0);
+            }
+
+            // Stop if no inputs have been recoded
+            if (gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0) {
+
+                robot.stop();
+            }
+
+            if (gamepad1.b && sensitivity > 0.2){
+                sensitivity = sensitivity - 0.1;
+
+                sleep(500);
+            }
+
+            if (gamepad1.x && sensitivity < 0.9){
+                sensitivity = sensitivity + 0.1;
+
+                sleep(500);
+
+            }
+
+        }
+
+
+    }
+
+
+}
