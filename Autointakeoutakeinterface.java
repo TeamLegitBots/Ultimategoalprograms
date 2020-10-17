@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
-public interface Autousingintakeinterface {
+public interface Autointakeoutakeinterface {
    //start intake method
     public void startIntake(int speed, int time);
   //start outake method
