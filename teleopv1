@@ -1,41 +1,31 @@
-TeleopV4.java
-Earlier this year
-Feb 28
-
-Akhilesh Basetty uploaded an item
-Java
-TeleopV4.java
-package org.firstinspires.ftc.teamcode.team16535;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.robot.Robot;
+import com.qualcomm.robotcore.util.Hardware;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-@TeleOp(name = "TeleopV4")
+
+@TeleOp(name = "MyTeleop")
 //@Disabled
-public class TeleopV4 extends LinearOpMode {
+public class TeleopV1 extends LinearOpMode {
 
-    LegitPushBotV4 robot = new LegitPushBotV4();
+    Hardwaremap robot = new Hardwaremap();
 
 
-    Servo pincher;
-    CRServo elevator;
-    Servo foundation;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
 
         robot.init(hardwareMap);
-        pincher = hardwareMap.get(Servo.class, "pincher");
-        foundation = hardwareMap.get(Servo.class, "FSR");
 
-        double Close_Servo = 1;
-        double Open_Servo = 0;
 
-        double sensitivity = .4;
+        double sensitivity = 2;
 
         waitForStart();
 
@@ -43,69 +33,52 @@ public class TeleopV4 extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Code for the four drive motors
-            float drive = -gamepad1.left_stick_y;
+            float drive = gamepad1.right_stick_x;
             float strafe = gamepad1.left_stick_x;
-            float turn = gamepad1.right_stick_x;
+            float turn = gamepad1.left_stick_y;
+
+            float intake = gamepad2.right_stick_x;
+            float wheelouttake = gamepad2.right_stick_y;
+            float outtake = gamepad2.left_stick_y;
 
 
+            float FR = -drive + turn - strafe;
+            float FL = drive + turn  + strafe;
+            float BR = -drive + turn + strafe;
+            float BL = drive + turn - strafe;
+            
+            
+            
+            
+            robot.Intake.setPower(-intake);
+            robot.WheelOutake.setPower(0.80 * (outtake));
+            robot.Pulley.setPower(0.9 * intake);
+            robot.FrontRight.setPower(sensitivity * FR);
+            
+            robot.FrontLeft.setPower(sensitivity * FL );
+            robot.BackRight.setPower(sensitivity * BR);
+            robot.BackLeft.setPower(sensitivity * BL);
 
-            float FR = drive - strafe - turn;
-            float FL = drive + strafe + turn;
-            float BR = drive + strafe - turn;
-            float BL = drive - strafe + turn;
 
-
-            robot.FrontRight.setPower(sensitivity * FR * LegitPushBotV4.FR);
-            robot.FrontLeft.setPower(sensitivity * FL * LegitPushBotV4.FL);
-            robot.BackRight.setPower(sensitivity * BR * LegitPushBotV4.BR);
-            robot.BackLeft.setPower(sensitivity * BL * LegitPushBotV4.BL);
-
-
-            // Lower servos to latch on to the foundation
-            if (gamepad1.right_bumper) {
-
-                foundation.setPosition(Close_Servo);
 
             }
 
-            // Pull servos up to unlatch from the foundation
-            if (gamepad1.left_bumper) {
 
-                foundation.setPosition(Open_Servo);
 
-            }
+        
+          double intakepower = 0;
+          
+          intakepower = gamepad2.left_trigger;
+          robot.Pulley.setPower(intakepower);
 
-            // Close the pincher
-            if (gamepad1.y) {
-                pincher.setPosition(Close_Servo);
-            }
-
-            // Open the pincher
-            if (gamepad1.a) {
-                pincher.setPosition(Open_Servo);
-            }
-
-            // Pull the sparkmini system up
-            if (gamepad1.right_trigger != 0) {
-
-                robot.WheelIntakeL.setPower(gamepad1.right_trigger);
-                robot.WheelIntakeR.setPower(-gamepad1.right_trigger);
-
-            }
-
+           
             // Drag the sparkmini system down
-            if (gamepad1.left_trigger != 0) {
-
-                robot.WheelIntakeL.setPower(-gamepad1.left_trigger);
-                robot.WheelIntakeR.setPower(gamepad1.left_trigger);
-
-            }
+            
 
             // Stop if not linear motion kit input
             if(gamepad1.left_trigger == 0 && gamepad1.right_trigger == 0) {
 
-                robot.WheelIntakeL.setPower(0);
-                robot.WheelIntakeR.setPower(0);
+
             }
 
             // Stop if no inputs have been recoded
@@ -133,4 +106,5 @@ public class TeleopV4 extends LinearOpMode {
     }
 
 
-}
+
+
