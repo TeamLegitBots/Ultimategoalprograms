@@ -70,7 +70,11 @@ public class TeleopV1 extends LinearOpMode {
             
             if (outtake<-.1 && intake>.1){
                 robot.Ring_gate.setPosition(.5);
-            } else{
+            } else if (intake<-.1){
+                
+                robot.Ring_gate.setPosition(.5);
+
+            }else{
                 robot.Ring_gate.setPosition(1);
 
             }
