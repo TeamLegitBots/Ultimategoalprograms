@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.Hardware;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -23,7 +24,7 @@ public class TeleopV1 extends LinearOpMode {
 
 
         robot.init(hardwareMap);
-
+        robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
 
         double sensitivity = 2;
 
@@ -34,7 +35,7 @@ public class TeleopV1 extends LinearOpMode {
 
             // Code for the four drive motors
             float drive = gamepad1.right_stick_x;
-            float strafe = gamepad1.left_stick_x;
+            float strafe = -gamepad1.left_stick_x;
             float turn = gamepad1.left_stick_y;
 
             float intake = gamepad2.right_stick_x;
@@ -51,15 +52,28 @@ public class TeleopV1 extends LinearOpMode {
             
             
             robot.Intake.setPower(-intake);
-            robot.WheelOutake.setPower(0.80 * (outtake));
-            robot.Pulley.setPower(0.9 * intake);
+            //robot.WheelOutake.setPower(0.80 * (outtake));
+            
+            robot.Pulley.setPower(0.8 * intake);
             robot.FrontRight.setPower(sensitivity * FR);
             
             robot.FrontLeft.setPower(sensitivity * FL );
             robot.BackRight.setPower(sensitivity * BR);
             robot.BackLeft.setPower(sensitivity * BL);
 
+            if (outtake<-.1){
+                robot.WheelOutake.setPower(.53);
+            } else{
+                robot.WheelOutake.setPower(0);
 
+            }
+            
+            if (outtake<-.1 && intake>.1){
+                robot.Ring_gate.setPosition(.5);
+            } else{
+                robot.Ring_gate.setPosition(1);
+
+            }
 
             }
 
@@ -104,7 +118,4 @@ public class TeleopV1 extends LinearOpMode {
 
 
     }
-
-
-
 
