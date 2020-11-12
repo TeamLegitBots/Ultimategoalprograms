@@ -27,13 +27,14 @@ public class TeleopV1 extends LinearOpMode {
         
         robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.Pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
         
         int WA_pos_1 = original_WA_pos;
-        int WA_pos_2 = original_WA_pos + 300;
-        int WA_pos_3 = original_WA_pos + 600;
+        int WA_pos_2 = original_WA_pos + 50;
+        int WA_pos_3 = original_WA_pos + 100;
 
         double sensitivity = 2;
         double wobble_goal_arm_pos = 1;
