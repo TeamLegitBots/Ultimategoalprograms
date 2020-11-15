@@ -16,7 +16,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class TeleopV1 extends LinearOpMode {
 
     Hardwaremap robot = new Hardwaremap();
+    
+    
 
+  
 
 
     @Override
@@ -47,19 +50,19 @@ public class TeleopV1 extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Code for the four drive motors
-            float drive = gamepad1.right_stick_x;
-            float strafe = -gamepad1.left_stick_x;
-            float turn = gamepad1.left_stick_y;
+            float drive = -gamepad1.right_stick_x;
+            float strafe = gamepad1.left_stick_x;
+        float turn = gamepad1.left_stick_y;
 
             float intake = gamepad2.right_stick_x;
             float wheelouttake = gamepad2.right_stick_y;
             float outtake = gamepad2.left_stick_y;
 
 
-            float FR = -drive + turn - strafe;
-            float FL = drive + turn  + strafe;
-            float BR = -drive + turn + strafe;
-            float BL = drive + turn - strafe;
+            float FR = drive - turn - strafe;
+            float FL = -drive - turn  + strafe;
+            float BR = drive - turn + strafe;
+            float BL = -drive  - turn - strafe;
             
             
             
@@ -75,19 +78,30 @@ public class TeleopV1 extends LinearOpMode {
             robot.BackLeft.setPower(sensitivity * BL);
 
             if (outtake<-.1){
-                robot.WheelOutake.setPower(.53);
+                robot.WheelOutake.setPower(.47);
             } else{
                 robot.WheelOutake.setPower(0);
 
             }
-            
-            if (outtake<-.1 && intake>.1){
-                robot.Ring_gate.setPosition(.5);
-            } else{
+            //automatic ringgate
+            /*if ((outtake<-.1 && intake>.1) || (intake<-.1 )){
                 robot.Ring_gate.setPosition(1);
+            } else{
+                robot.Ring_gate.setPosition(0);
 
             }
+        
             
+            */
+            
+            //manual ringgate
+            if (gamepad2.dpad_right){
+                robot.Ring_gate.setPosition(1);
+            }
+            if(gamepad2.dpad_left){
+                robot.Ring_gate.setPosition(0);
+
+            }
             //move wobble goal arm servo
             if (gamepad2.a){
                 robot.Wgoalservo.setPosition(0);
@@ -115,22 +129,10 @@ public class TeleopV1 extends LinearOpMode {
 
             }
 
-            // Stop if no inputs have been recoded
-            if (gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0) {
+         
+            
 
-                robot.stop();
-            }
-
-            if (gamepad1.b && sensitivity > 0.2){
-                sensitivity = sensitivity - 0.1;
-
-                sleep(500);
-            }
-
-            if (gamepad1.x && sensitivity < 0.9){
-                sensitivity = sensitivity + 0.1;
-
-                sleep(500);
+           
 
             }
             //wobble goal arm
@@ -220,5 +222,5 @@ public class TeleopV1 extends LinearOpMode {
         }
 
 
-    }
+    
 
