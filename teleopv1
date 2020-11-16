@@ -134,7 +134,7 @@ public class TeleopV1 extends LinearOpMode {
 
            
 
-            }
+        
             //wobble goal arm
             
             if(gamepad2.dpad_up && wobble_goal_arm_pos<3){
@@ -220,7 +220,4 @@ public class TeleopV1 extends LinearOpMode {
             }             
             
         }
-
-
-    
-
+}
