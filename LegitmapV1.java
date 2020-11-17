@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+
 
 
 /**
@@ -18,7 +22,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-public class LegitmapV1 {
+public class Hardwaremap {
+    public static final double FR = 1;
+   public  static final double FL = 1;
+    public static final double BR = 1;
+     public static final double BL = 1;
 
 
     /* Public OpMode members. */
@@ -27,16 +35,17 @@ public class LegitmapV1 {
     public DcMotor FrontLeft = null;
     public DcMotor BackRight = null;
     public DcMotor BackLeft = null;
-
-
-
-
-    public DcMotor Wheeloutake = null;
-
+    public DcMotor WheelOutake = null;
+    public DcMotor Pulley = null;
     public DcMotor Intake = null;
+    public DcMotor Wgoalarm = null;
+    public Servo Ring_gate = null;
     public Servo Wgoalservo = null;
     public Servo Backservo = null;
 
+
+
+  
     public ColorSensor colorSensor = null;
 
 
@@ -62,34 +71,32 @@ public class LegitmapV1 {
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double Circumference = 62.1;
 
-    static final double FR = 1;
-    static final double FL = 1;
-    static final double BR = 1;
-    static final double BL = 1;
 
 
     /* local OpMode members. */
     HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
 
-
+  public Hardwaremap() {
+      
+  }
 
     /* Constructor */
 
 
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
-        hwMap = ahwMap;
+        this.hwMap = ahwMap;
 
         // Define and Initialize Motors
         FrontRight = hwMap.get(DcMotor.class, "FR");
         FrontLeft = hwMap.get(DcMotor.class, "FL");
         BackRight = hwMap.get(DcMotor.class, "BR");
         BackLeft = hwMap.get(DcMotor.class, "BL");
-        Intake = hwMap.get(DcMotor.class,"I");
-        Wheeloutake = hwMap.get(DcMotor.class, "WO");
-
-
+        WheelOutake = hwMap.get(DcMotor.class, "WO");
+        Pulley = hwMap.get(DcMotor.class, "P");
+        Intake = hwMap.get(DcMotor.class, "I");
+        Wgoalarm = hwMap.get(DcMotor.class, "WGA");
 
 
 
@@ -97,14 +104,15 @@ public class LegitmapV1 {
 
         // Define and initialize ALL installed servos.
 
-        Wgoalservo = hwMap.get(Servo.class, "WS");
-        Backservo = hwMap.get(Servo.class, "BS");
+        Wgoalservo = hwMap.servo.get("WS");
+        Backservo = hwMap.servo.get("BS");
+        Ring_gate = hwMap.servo.get("gate");
 
 
 
         // Define all sensors
 
-        colorSensor = hwMap.get(ColorSensor.class, "colorSensor");
+        //colorSensor = hwMap.get(ColorSensor.class, "colorSensor");
 
 
         // Set all motors to zero power
@@ -112,6 +120,10 @@ public class LegitmapV1 {
         BackLeft.setPower(0);
         BackRight.setPower(0);
         FrontRight.setPower(0);
+        Pulley.setPower(0);
+        Intake.setPower(0);
+        Wgoalarm.setPower(0);
+        WheelOutake.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -122,6 +134,7 @@ public class LegitmapV1 {
         BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
 
         //Set the directino Reverse for the Right side motors so we can get all positive value inputs
         FrontRight.setDirection(DcMotor.Direction.FORWARD);
@@ -249,9 +262,7 @@ public class LegitmapV1 {
 
     /*public void driveTillTouch(String direction, double speed) {
         while (opMode.opModeIsActive()) {
-
             while (FrontTouch.getState() == true) {
-
                 if (direction == "forward") {
                     FrontLeft.setPower(Math.abs(speed*FL));
                     FrontRight.setPower(Math.abs(speed*FR));
@@ -277,7 +288,6 @@ public class LegitmapV1 {
                     FrontRight.setPower(speed*FR);
                 }
             }
-
             BackLeft.setPower(0);
             BackRight.setPower(0);
             FrontLeft.setPower(0);
@@ -411,15 +421,12 @@ public class LegitmapV1 {
                 FrontLeft.setPower(-speed*FL);
                 FrontRight.setPower(speed*FR);
             }
-
         }
-
         BackLeft.setPower(0);
         BackRight.setPower(0);
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
     }
-
     public void stopAtBlue(String direction, double speed) throws InterruptedException {
         while (colorSensor.blue() < bluevalue) {
             if (direction == "forward") {
@@ -446,9 +453,7 @@ public class LegitmapV1 {
                 FrontLeft.setPower(-speed*FL);
                 FrontRight.setPower(speed*FR);
             }
-
         }
-
         BackLeft.setPower(0);
         BackRight.setPower(0);
         FrontLeft.setPower(0);
