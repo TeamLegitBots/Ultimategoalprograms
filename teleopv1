@@ -30,6 +30,11 @@ public class TeleopV1 extends LinearOpMode {
         
         robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        
+        robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -43,6 +48,8 @@ public class TeleopV1 extends LinearOpMode {
         double wobble_goal_arm_pos = 1;
         double WAerror=0;
         int WAservo_pos =0;
+        double shooterspeed = .46;
+
 
         waitForStart();
 
@@ -78,7 +85,7 @@ public class TeleopV1 extends LinearOpMode {
             robot.BackLeft.setPower(sensitivity * BL);
 
             if (outtake<-.1){
-                robot.WheelOutake.setPower(.47);
+                robot.WheelOutake.setPower(shooterspeed);
             } else{
                 robot.WheelOutake.setPower(0);
 
