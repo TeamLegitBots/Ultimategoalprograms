@@ -17,9 +17,8 @@ public class TeleopV1 extends LinearOpMode {
 
     Hardwaremap robot = new Hardwaremap();
     
-    
+    double sensitivity = 2;
 
-  
 
 
     @Override
@@ -41,8 +40,8 @@ public class TeleopV1 extends LinearOpMode {
         int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
         
         int WA_pos_1 = original_WA_pos;
-        int WA_pos_2 = original_WA_pos + 700;
-        int WA_pos_3 = original_WA_pos + 1800;
+        int WA_pos_2 = original_WA_pos + 500;
+        int WA_pos_3 = original_WA_pos + 1600;
 
         double sensitivity = 2;
         double wobble_goal_arm_pos = 1;
@@ -57,20 +56,22 @@ public class TeleopV1 extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Code for the four drive motors
+            /*
             float drive = -gamepad1.right_stick_x;
             float strafe = gamepad1.left_stick_x;
-        float turn = gamepad1.left_stick_y;
-
+            float turn = gamepad1.left_stick_y;
+            */
+            
             float intake = gamepad2.right_stick_x;
             float wheelouttake = gamepad2.right_stick_y;
             float outtake = gamepad2.left_stick_y;
 
-
+            /*
             float FR = drive - turn - strafe;
             float FL = -drive - turn  + strafe;
             float BR = drive - turn + strafe;
             float BL = -drive  - turn - strafe;
-            
+            */
             
             
             
@@ -78,11 +79,14 @@ public class TeleopV1 extends LinearOpMode {
             //robot.WheelOutake.setPower(0.80 * (outtake));
             
             robot.Pulley.setPower(intake);
+            /*
             robot.FrontRight.setPower(sensitivity * FR);
-            
             robot.FrontLeft.setPower(sensitivity * FL );
             robot.BackRight.setPower(sensitivity * BR);
             robot.BackLeft.setPower(sensitivity * BL);
+            */
+            setDriveMotorPower();
+
 
             if (outtake<-.1){
                 robot.WheelOutake.setPower(shooterspeed);
@@ -167,6 +171,7 @@ public class TeleopV1 extends LinearOpMode {
                     robot.Wgoalarm.setPower(1);
                 }
                 while(robot.Wgoalarm.isBusy()&&opModeIsActive()){
+                    setDriveMotorPower();
                 }
                 robot.Wgoalarm.setPower(0);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -186,19 +191,9 @@ public class TeleopV1 extends LinearOpMode {
                 } else {
                     robot.Wgoalarm.setPower(1);
                 }
-            telemetry.addData("original position",original_WA_pos);
-            telemetry.addData("arm position",wobble_goal_arm_pos);
-            telemetry.addData("power",robot.Wgoalarm.getPower());
-            telemetry.addData("target position",robot.Wgoalarm.getTargetPosition());
-            telemetry.addData("current position",robot.Wgoalarm.getCurrentPosition());
-            telemetry.update();
+            
                 while(robot.Wgoalarm.isBusy() && opModeIsActive()){
-            telemetry.addData("original position",original_WA_pos);
-            telemetry.addData("arm position",wobble_goal_arm_pos);
-            telemetry.addData("power",robot.Wgoalarm.getPower());
-            telemetry.addData("target position",robot.Wgoalarm.getTargetPosition());
-            telemetry.addData("current position",robot.Wgoalarm.getCurrentPosition());
-            telemetry.update();
+                    setDriveMotorPower();
                 }
                 robot.Wgoalarm.setPower(0);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -214,8 +209,7 @@ public class TeleopV1 extends LinearOpMode {
                     robot.Wgoalarm.setPower(1);
                 }
                 while(robot.Wgoalarm.isBusy()&&opModeIsActive()){
-                    telemetry.addData("current position",robot.Wgoalarm.getCurrentPosition());
-                    telemetry.update();
+                    setDriveMotorPower();
                 }
                 robot.Wgoalarm.setPower(0);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -226,5 +220,20 @@ public class TeleopV1 extends LinearOpMode {
 
             }             
             
+        }
+        public void setDriveMotorPower(){      
+            float drive = -gamepad1.right_stick_x;
+            float strafe = gamepad1.left_stick_x;
+            float turn = gamepad1.left_stick_y;
+
+            float FR = drive - turn - strafe;
+            float FL = -drive - turn  + strafe;
+            float BR = drive - turn + strafe;
+            float BL = -drive  - turn - strafe;
+            
+            robot.FrontRight.setPower(sensitivity * FR);
+            robot.FrontLeft.setPower(sensitivity * FL );
+            robot.BackRight.setPower(sensitivity * BR);
+            robot.BackLeft.setPower(sensitivity * BL);
         }
 }
