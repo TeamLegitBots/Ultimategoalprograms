@@ -17,7 +17,7 @@ public class TeleopV1 extends LinearOpMode {
 
     Hardwaremap robot = new Hardwaremap();
     
-    double sensitivity = 2;
+    double sensitivity = .5;
 
 
 
@@ -29,6 +29,11 @@ public class TeleopV1 extends LinearOpMode {
         
         robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        
+        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+        robot.BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         
         robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -43,11 +48,11 @@ public class TeleopV1 extends LinearOpMode {
         int WA_pos_2 = original_WA_pos + 500;
         int WA_pos_3 = original_WA_pos + 1600;
 
-        double sensitivity = 2;
         double wobble_goal_arm_pos = 1;
         double WAerror=0;
         int WAservo_pos =0;
-        double shooterspeed = .46;
+        double shooterspeed = .47;
+        double powershotspeed = .5;
 
 
         waitForStart();
@@ -93,6 +98,9 @@ public class TeleopV1 extends LinearOpMode {
             } else{
                 robot.WheelOutake.setPower(0);
 
+            }
+            if (gamepad2.left_bumper && outtake<-.1){
+                robot.WheelOutake.setPower(powershotspeed);
             }
             //automatic ringgate
             /*if ((outtake<-.1 && intake>.1) || (intake<-.1 )){
@@ -172,6 +180,9 @@ public class TeleopV1 extends LinearOpMode {
                 }
                 while(robot.Wgoalarm.isBusy()&&opModeIsActive()){
                     setDriveMotorPower();
+                    if (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.a || gamepad2.b){
+                        break;
+                    }
                 }
                 robot.Wgoalarm.setPower(0);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -194,6 +205,9 @@ public class TeleopV1 extends LinearOpMode {
             
                 while(robot.Wgoalarm.isBusy() && opModeIsActive()){
                     setDriveMotorPower();
+                    if (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.a || gamepad2.b){
+                        break;
+                    }
                 }
                 robot.Wgoalarm.setPower(0);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -204,18 +218,33 @@ public class TeleopV1 extends LinearOpMode {
                 robot.Wgoalarm.setTargetPosition(WA_pos_3);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 if (robot.Wgoalarm.getCurrentPosition()>WA_pos_3){
-                    robot.Wgoalarm.setPower(-1);
+                    robot.Wgoalarm.setPower(-.75);
                 } else {
-                    robot.Wgoalarm.setPower(1);
+                    robot.Wgoalarm.setPower(.75);
                 }
                 while(robot.Wgoalarm.isBusy()&&opModeIsActive()){
                     setDriveMotorPower();
+                    if (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.a || gamepad2.b){
+                        break;
+                    }
                 }
                 robot.Wgoalarm.setPower(0);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
             
-            
+            //sensitivity
+            if(gamepad1.dpad_up && sensitivity<1){
+                while(gamepad1.dpad_up){}
+                sensitivity = sensitivity + .1;
+                
+            }
+            if(gamepad1.dpad_down && sensitivity>.1){
+                while(gamepad1.dpad_down){}
+
+                sensitivity = sensitivity - .1;
+            }
+            telemetry.addData("sensitivity: ", sensitivity);
+            telemetry.update();
             
 
             }             
