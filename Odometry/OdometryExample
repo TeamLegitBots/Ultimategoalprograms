@@ -1,0 +1,210 @@
+package org.firstinspires.ftc.teamcode.OdometryStuff;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.teamcode.HardwareMap.LegitbotV1;
+import org.firstinspires.ftc.teamcode.OdometryStuff.OdometryGlobalCoordinatePosition;
+
+
+@Autonomous(name = "My Odometry OpMode")
+public class OdometryExample extends LinearOpMode {
+    //Drive motors
+
+
+    final double COUNTS_PER_INCH = 307.699557;
+
+    //Hardware Map Names for drive motors and odometry wheels. THIS WILL CHANGE ON EACH ROBOT, YOU NEED TO UPDATE THESE VALUES ACCORDINGLY
+
+    BNO055IMU imu;
+
+    OdometryGlobalCoordinatePosition globalPositionUpdate;
+    LegitbotV1 robot = new LegitbotV1();
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        robot.init(hardwareMap);
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        //Initialize hardware map values. PLEASE UPDATE THESE VALUES TO MATCH YOUR CONFIGURATION
+        imu.initialize(parameters);
+        telemetry.addData("Status", "Init Complete");
+        telemetry.update();
+        waitForStart();
+
+        //Create and start GlobalCoordinatePosition thread to constantly update the global coordinate positions
+        globalPositionUpdate = new OdometryGlobalCoordinatePosition(robot.verticalLeft, robot.verticalRight, robot.horizontal, COUNTS_PER_INCH, 75);
+        Thread positionThread = new Thread(globalPositionUpdate);
+        positionThread.start();
+
+        globalPositionUpdate.reverseRightEncoder();
+        globalPositionUpdate.reverseNormalEncoder();
+
+
+        while (opModeIsActive()) {
+            //Display Global (x, y, theta) coordinates
+            Gotopos(0 * COUNTS_PER_INCH, 1 * COUNTS_PER_INCH, 0.3, 24, 1 * COUNTS_PER_INCH);
+        }
+        telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / COUNTS_PER_INCH);
+        telemetry.addData("Y Position", globalPositionUpdate.returnYCoordinate() / COUNTS_PER_INCH);
+        telemetry.addData("Orientation (Degrees)", globalPositionUpdate.returnOrientation());
+
+        telemetry.addData("Vertical left encoder position", robot.verticalLeft.getCurrentPosition());
+        telemetry.addData("Vertical right encoder position", robot.verticalRight.getCurrentPosition());
+        telemetry.addData("horizontal encoder position", robot.horizontal.getCurrentPosition());
+
+        telemetry.addData("Thread Active", positionThread.isAlive());
+        telemetry.update();
+
+
+        globalPositionUpdate.stop();
+    }
+
+
+    //Stop the thread
+
+
+    public void Gotopos(double TargetXPosition, double TargetYPosition, double robotpower, double desiredRobotOrientation, double Allowabledistanceerror) {
+        double DistancetoXtarget = TargetXPosition - globalPositionUpdate.returnXCoordinate();
+        double DistancetoYtarget = TargetYPosition - globalPositionUpdate.returnYCoordinate();
+
+        double distance = Math.hypot(DistancetoXtarget, DistancetoYtarget);
+        // while (opModeIsActive() && distance > Allowabledistanceerror) {
+        distance = Math.hypot(DistancetoXtarget, DistancetoYtarget);
+        DistancetoXtarget = TargetXPosition - globalPositionUpdate.returnXCoordinate();
+        DistancetoYtarget = TargetYPosition - globalPositionUpdate.returnYCoordinate();
+
+        double robotmovementangle = Math.atan2(DistancetoXtarget, DistancetoYtarget);
+
+        double robotmovementxcomponent = calculateX(robotmovementangle, robotpower);
+        double robotmovementycomponent = calculateY(robotmovementangle, robotpower);
+
+
+        double pivotCorrection = desiredRobotOrientation - globalPositionUpdate.returnOrientation();
+
+
+        if (TargetXPosition < globalPositionUpdate.returnXCoordinate() && TargetYPosition < globalPositionUpdate.returnYCoordinate()) {
+            setPowerAll(robotpower, -robotpower, robotpower, robotpower);
+        }
+        if (TargetXPosition > globalPositionUpdate.returnXCoordinate() && TargetYPosition > globalPositionUpdate.returnYCoordinate()) {
+            setPowerAll(-robotpower, robotpower, robotpower, -robotpower);
+            while (opModeIsActive() && robotmovementangle != globalPositionUpdate.returnOrientation()) {
+                telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / COUNTS_PER_INCH);
+                telemetry.addData("Y Position", globalPositionUpdate.returnYCoordinate() / COUNTS_PER_INCH);
+                telemetry.addData("Orientation (Degrees)", globalPositionUpdate.returnOrientation());
+
+                telemetry.addData("Vertical left encoder position", robot.verticalLeft.getCurrentPosition());
+                telemetry.addData("Vertical right encoder position", robot.verticalRight.getCurrentPosition());
+                telemetry.addData("horizontal encoder position", robot.horizontal.getCurrentPosition());
+                Thread positionThread = new Thread(globalPositionUpdate);
+                telemetry.addData("Thread Active", positionThread.isAlive());
+                telemetry.update();
+            }
+        }
+        robot.FrontLeft.setPower(0);
+        robot.BackLeft.setPower(0);
+        robot.FrontRight.setPower(0);
+        robot.BackRight.setPower(0);
+
+
+
+                if(distance < Allowabledistanceerror) {
+
+                    robot.FrontLeft.setPower(robotpower);
+                    robot.FrontLeft.setPower(robotpower);
+                    robot.BackLeft.setPower(robotpower);
+                    robot.FrontRight.setPower(robotpower);
+                    robot.BackRight.setPower(robotpower);
+                    while (opModeIsActive() && distance >= Allowabledistanceerror) {
+                        distance = Math.hypot(DistancetoXtarget, DistancetoYtarget);
+                        DistancetoXtarget = TargetXPosition - globalPositionUpdate.returnXCoordinate();
+                        DistancetoYtarget = TargetYPosition - globalPositionUpdate.returnYCoordinate();
+                        telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / COUNTS_PER_INCH);
+                        telemetry.addData("Y Position", globalPositionUpdate.returnYCoordinate() / COUNTS_PER_INCH);
+                        telemetry.addData("Orientation (Degrees)", globalPositionUpdate.returnOrientation());
+
+                        telemetry.addData("Vertical left encoder position", robot.verticalLeft.getCurrentPosition());
+                        telemetry.addData("Vertical right encoder position", robot.verticalRight.getCurrentPosition());
+                        telemetry.addData("horizontal encoder position", robot.horizontal.getCurrentPosition());
+                        Thread positionThread = new Thread(globalPositionUpdate);
+                        telemetry.addData("Thread Active", positionThread.isAlive());
+                        telemetry.update();
+
+                    }
+                }
+
+    //robot.FrontLeft.setPower(0);
+    //robot.BackLeft.setPower(0);
+    //robot.FrontRight.setPower(0);
+    // robot.BackRight.setPower(0);
+
+                    if (desiredRobotOrientation!=globalPositionUpdate.returnOrientation()) {
+                       if (getZAngle() < desiredRobotOrientation && opModeIsActive()) {
+                           robot.FrontLeft.setPower(-robotpower);
+                           robot.BackLeft.setPower(-robotpower);
+                           robot.FrontRight.setPower(robotpower);
+                           robot.BackRight.setPower(robotpower);
+
+                       } else if (getZAngle() > desiredRobotOrientation && opModeIsActive())  {
+                               robot.FrontLeft.setPower(robotpower);
+                               robot.BackLeft.setPower(robotpower);
+                               robot.FrontRight.setPower(-robotpower);
+                               robot.BackRight.setPower(-robotpower);
+                           }
+
+                       }
+
+
+                        while (opModeIsActive() && robotmovementangle != globalPositionUpdate.returnOrientation()) {
+                            telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / COUNTS_PER_INCH);
+                            telemetry.addData("Y Position", globalPositionUpdate.returnYCoordinate() / COUNTS_PER_INCH);
+                            telemetry.addData("Orientation (Degrees)", globalPositionUpdate.returnOrientation());
+
+                            telemetry.addData("Vertical left encoder position", robot.verticalLeft.getCurrentPosition());
+                            telemetry.addData("Vertical right encoder position", robot.verticalRight.getCurrentPosition());
+                            telemetry.addData("horizontal encoder position", robot.horizontal.getCurrentPosition());
+                            Thread positionThread = new Thread(globalPositionUpdate);
+                            telemetry.addData("Thread Active", positionThread.isAlive());
+                            telemetry.update();
+                        }
+                        robot.FrontLeft.setPower(0);
+                        robot.BackLeft.setPower(0);
+                        robot.FrontRight.setPower(0);
+                        robot.BackRight.setPower(0);
+                    }
+
+
+
+
+    private double calculateX(double desiredAngle, double speed) {
+        return Math.sin(Math.toRadians(desiredAngle)) * speed;
+    }
+
+    /**
+     * Calculate the power in the y direction
+     * @param desiredAngle angle on the y axis
+     * @param speed robot's speed
+     * @return the y vector
+     */
+    private double calculateY(double desiredAngle, double speed) {
+        return Math.cos(Math.toRadians(desiredAngle)) * speed;
+    }
+    private double getZAngle(){
+        return (-imu.getAngularOrientation().firstAngle);
+    }
+    private void setPowerAll(double rf, double rb, double lf, double lb){
+        robot.FrontRight.setPower(rf);
+        robot.BackRight.setPower(rb);
+        robot.FrontLeft.setPower(lf);
+        robot.BackLeft.setPower(lb);
+    }
+}
