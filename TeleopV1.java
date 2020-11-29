@@ -30,10 +30,7 @@ public class TeleopV1 extends LinearOpMode {
         robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        robot.BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       
         
         robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
