@@ -24,9 +24,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Hardwaremap {
     public static final double FR = 1;
-   public  static final double FL = 1;
+    public  static final double FL = 1;
     public static final double BR = 1;
-     public static final double BL = 1;
+    public static final double BL = 1;
+
+    public static final int horizontalMultiplier = 1;
+    public static final int verticalLeftMultiplier = 1;
+    public static final int verticalRightMultiplier = 1;
+
 
 
     /* Public OpMode members. */
@@ -45,7 +50,7 @@ public class Hardwaremap {
 
 
 
-  
+
     public ColorSensor colorSensor = null;
 
 
@@ -77,9 +82,9 @@ public class Hardwaremap {
     HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
 
-  public Hardwaremap() {
-      
-  }
+    public Hardwaremap() {
+
+    }
 
     /* Constructor */
 
@@ -152,246 +157,154 @@ public class Hardwaremap {
         FrontRight.setPower(0);
     }
 
+    /* for reference:
+        front left motor = vertical right encoder
+        back right motor = vertical left encoder
+        back left motor = horizontal encoder
+     */
     public void driveForward(double speed, double inches) throws InterruptedException {
 
-        int newfrontLeftTarget;
-        int newfrontRightTarget;
-        int newbackLeftTarget;
-        int newbackRightTarget;
+        double average = ((FrontLeft.getCurrentPosition() * verticalRightMultiplier) + (BackRight.getCurrentPosition() * verticalLeftMultiplier))/2;
+        double targetPos = average + (inches * COUNTS_PER_INCH);
 
-        // Determine new target position, and pass to motor controller
-        newfrontLeftTarget = FrontLeft.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-        newfrontRightTarget = FrontRight.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-        newbackLeftTarget = BackLeft.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-        newbackRightTarget = BackRight.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-        FrontLeft.setTargetPosition(newfrontLeftTarget);
-        FrontRight.setTargetPosition(newfrontRightTarget);
-        BackLeft.setTargetPosition(newbackLeftTarget);
-        BackRight.setTargetPosition(newbackRightTarget);
-
-        // Turn On RUN_TO_POSITION
-        FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // reset the timeout time and start motion.
-        FrontLeft.setPower(Math.abs(speed*FL));
-        FrontRight.setPower(Math.abs(speed*FR));
-        BackRight.setPower(Math.abs(speed*BR));
-        BackLeft.setPower(Math.abs(speed*BL));
-        // keep looping while we are still active, and there is time left, and both motors are running.
-        // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-        // its target position, the motion will stop.  This is "safer" in the event that the robot will
-        // always end the motion as soon as possible.
-        // However, if you require that BOTH motors have finished their moves before the robot continues
-        // onto the next step, use (isBusy() || isBusy()) in the loop test.
-
-        while (FrontLeft.isBusy() && BackLeft.isBusy() && FrontRight.isBusy() && BackRight.isBusy()) {
+        while (average < targetPos){
+            FrontLeft.setPower(speed);
+            FrontRight.setPower(speed);
+            BackLeft.setPower(speed);
+            BackRight.setPower(speed);
+            average = ((FrontLeft.getCurrentPosition() * verticalRightMultiplier) + (BackRight.getCurrentPosition() * verticalLeftMultiplier))/2;
         }
-
-
         // Stop all motion;
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
-
-
-
-        // Turn off RUN_TO_POSITION
-        FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
 
     }
 
     public void driveBack(double speed, double inches) throws InterruptedException {
-        int newfrontLeftTarget;
-        int newfrontRightTarget;
-        int newbackLeftTarget;
-        int newbackRightTarget;
 
-        // Determine new target position, and pass to motor controller
-        newfrontLeftTarget = FrontLeft.getCurrentPosition() + (int) (-inches * COUNTS_PER_INCH);
-        newfrontRightTarget = FrontRight.getCurrentPosition() + (int) (-inches * COUNTS_PER_INCH);
-        newbackLeftTarget = BackLeft.getCurrentPosition() + (int) (-inches * COUNTS_PER_INCH);
-        newbackRightTarget = BackRight.getCurrentPosition() + (int) (-inches * COUNTS_PER_INCH);
-        FrontLeft.setTargetPosition(newfrontLeftTarget);
-        FrontRight.setTargetPosition(newfrontRightTarget);
-        BackLeft.setTargetPosition(newbackLeftTarget);
-        BackRight.setTargetPosition(newbackRightTarget);
+        double average = ((FrontLeft.getCurrentPosition() * verticalRightMultiplier) + (BackRight.getCurrentPosition() * verticalLeftMultiplier))/2;
+        double targetPos = average - (inches * COUNTS_PER_INCH);
 
-        // Turn On RUN_TO_POSITION
-        FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // reset the timeout time and start motion.
-        FrontLeft.setPower(Math.abs(-speed*FL));
-        FrontRight.setPower(Math.abs(-speed*FR));
-        BackRight.setPower(Math.abs(-speed*BR));
-        BackLeft.setPower(Math.abs(-speed*BL));
-        // keep looping while we are still active, and there is time left, and both motors are running.
-        // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-        // its target position, the motion will stop.  This is "safer" in the event that the robot will
-        // always end the motion as soon as possible.
-        // However, if you require that BOTH motors have finished their moves before the robot continues
-        // onto the next step, use (isBusy() || isBusy()) in the loop test.
-        while (FrontLeft.isBusy() && BackLeft.isBusy() && FrontRight.isBusy() && BackRight.isBusy()) {
+        while (average > targetPos){
+            FrontLeft.setPower(-speed);
+            FrontRight.setPower(-speed);
+            BackLeft.setPower(-speed);
+            BackRight.setPower(-speed);
+            average = ((FrontLeft.getCurrentPosition() * verticalRightMultiplier) + (BackRight.getCurrentPosition() * verticalLeftMultiplier))/2;
         }
-
         // Stop all motion;
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
 
-
-
-        // Turn off RUN_TO_POSITION
-        FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
-    /*public void driveTillTouch(String direction, double speed) {
-        while (opMode.opModeIsActive()) {
-            while (FrontTouch.getState() == true) {
-                if (direction == "forward") {
-                    FrontLeft.setPower(Math.abs(speed*FL));
-                    FrontRight.setPower(Math.abs(speed*FR));
-                    BackRight.setPower(Math.abs(speed*BR));
-                    BackLeft.setPower(Math.abs(speed*BL));
-                }
-                if (direction == "back") {
-                    FrontLeft.setPower(Math.abs(-speed*FL));
-                    FrontRight.setPower(Math.abs(-speed*FR));
-                    BackRight.setPower(Math.abs(-speed*BR));
-                    BackLeft.setPower(Math.abs(-speed*BL));
-                }
-                if (direction == "right") {
-                    BackLeft.setPower(-speed*BL);
-                    BackRight.setPower(speed*BR);
-                    FrontLeft.setPower(speed*FL);
-                    FrontRight.setPower(-speed*FR);
-                }
-                if (direction == "left") {
-                    BackLeft.setPower(speed*BL);
-                    BackRight.setPower(-speed*BR);
-                    FrontLeft.setPower(-speed*FL);
-                    FrontRight.setPower(speed*FR);
-                }
-            }
-            BackLeft.setPower(0);
-            BackRight.setPower(0);
-            FrontLeft.setPower(0);
-            FrontRight.setPower(0);
-        }
-    }*/
 
     public void strafeLeft(double speed, double inches) throws InterruptedException {
-        int newfrontLeftTarget;
-        int newfrontRightTarget;
-        int newbackLeftTarget;
-        int newbackRightTarget;
 
-        // Determine new target position, and pass to motor controller
-        newfrontLeftTarget = FrontLeft.getCurrentPosition() + (int) (-inches * COUNTS_PER_INCH);
-        newfrontRightTarget = FrontRight.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-        newbackLeftTarget = BackLeft.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-        newbackRightTarget = BackRight.getCurrentPosition() + (int) (-inches * COUNTS_PER_INCH);
-        FrontLeft.setTargetPosition(newfrontLeftTarget);
-        FrontRight.setTargetPosition(newfrontRightTarget);
-        BackLeft.setTargetPosition(newbackLeftTarget);
-        BackRight.setTargetPosition(newbackRightTarget);
+        double targetPos = BackLeft.getCurrentPosition() * horizontalMultiplier - (inches * COUNTS_PER_INCH);
 
-        // Turn On RUN_TO_POSITION
-        FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // reset the timeout time and start motion.
-        FrontLeft.setPower(Math.abs(-speed*FL));
-        FrontRight.setPower(Math.abs(speed*FR));
-        BackRight.setPower(Math.abs(-speed*BR));
-        BackLeft.setPower(Math.abs(speed*BL));
-        // keep looping while we are still active, and there is time left, and both motors are running.
-        // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-        // its target position, the motion will stop.  This is "safer" in the event that the robot will
-        // always end the motion as soon as possible.
-        // However, if you require that BOTH motors have finished their moves before the robot continues
-        // onto the next step, use (isBusy() || isBusy()) in the loop test.
-        while (FrontLeft.isBusy() && BackLeft.isBusy() && FrontRight.isBusy() && BackRight.isBusy()) {
+        while (BackLeft.getCurrentPosition() * horizontalMultiplier > targetPos){
+            FrontLeft.setPower(-speed);
+            FrontRight.setPower(speed);
+            BackLeft.setPower(speed);
+            BackRight.setPower(-speed);
         }
+
         // Stop all motion;
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
 
-
-        // Turn off RUN_TO_POSITION
-        FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
     public void strafeRight(double speed, double inches) throws InterruptedException {
-        int newfrontLeftTarget;
-        int newfrontRightTarget;
-        int newbackLeftTarget;
-        int newbackRightTarget;
+        double targetPos = BackLeft.getCurrentPosition() * horizontalMultiplier+ (inches * COUNTS_PER_INCH);
 
-        // Determine new target position, and pass to motor controller
-        newfrontLeftTarget = FrontLeft.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-        newfrontRightTarget = FrontRight.getCurrentPosition() + (int) (-inches * COUNTS_PER_INCH);
-        newbackLeftTarget = BackLeft.getCurrentPosition() + (int) (-inches * COUNTS_PER_INCH);
-        newbackRightTarget = BackRight.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-        FrontLeft.setTargetPosition(newfrontLeftTarget);
-        FrontRight.setTargetPosition(newfrontRightTarget);
-        BackLeft.setTargetPosition(newbackLeftTarget);
-        BackRight.setTargetPosition(newbackRightTarget);
-
-        // Turn On RUN_TO_POSITION
-        FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // reset the timeout time and start motion.
-        FrontLeft.setPower(Math.abs(speed*FL));
-        FrontRight.setPower(Math.abs(-speed*FR));
-        BackRight.setPower(Math.abs(speed*BR));
-        BackLeft.setPower(Math.abs(-speed*BL));
-        // keep looping while we are still active, and there is time left, and both motors are running.
-        // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-        // its target position, the motion will stop.  This is "safer" in the event that the robot will
-        // always end the motion as soon as possible.
-        // However, if you require that BOTH motors have finished their moves before the robot continues
-        // onto the next step, use (isBusy() || isBusy()) in the loop test.
-        while (FrontLeft.isBusy() && BackLeft.isBusy() && FrontRight.isBusy() && BackRight.isBusy()) {
+        while (BackLeft.getCurrentPosition() * horizontalMultiplier< targetPos){
+            FrontLeft.setPower(speed);
+            FrontRight.setPower(-speed);
+            BackLeft.setPower(-speed);
+            BackRight.setPower(speed);
         }
+
         // Stop all motion;
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
 
+    }
 
-        // Turn off RUN_TO_POSITION
-        FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    public void turnLeft(double speed, double degrees) throws InterruptedException {
+        double inches = (degrees / 360) * Circumference;
+        double targetPos = inches * COUNTS_PER_INCH;
+
+        double originalRight = FrontLeft.getCurrentPosition() * verticalRightMultiplier;
+        double originalLeft = BackRight.getCurrentPosition() * verticalLeftMultiplier;
+
+        double deltaRight = (FrontLeft.getCurrentPosition() * verticalRightMultiplier) - originalRight;
+        double deltaLeft = originalLeft- (BackRight.getCurrentPosition() * verticalLeftMultiplier);
+
+        double averageDifference = (deltaRight + deltaLeft)/2;
+
+        while (averageDifference<targetPos){
+            FrontLeft.setPower(-speed);
+            FrontRight.setPower(speed);
+            BackLeft.setPower(-speed);
+            BackRight.setPower(speed);
+
+            deltaRight = (FrontLeft.getCurrentPosition() * verticalRightMultiplier) - originalRight;
+            deltaLeft = originalLeft- (BackRight.getCurrentPosition() * verticalLeftMultiplier);
+
+            averageDifference = (deltaRight + deltaLeft)/2;
+        }
+
+
+        FrontLeft.setPower(0);
+        FrontRight.setPower(0);
+        BackLeft.setPower(0);
+        BackRight.setPower(0);
+
+
+    }
+
+    public void turnRight(double speed, double degrees) throws InterruptedException {
+        double inches = (degrees / 360) * Circumference;
+        double targetPos = inches * COUNTS_PER_INCH;
+
+        double originalRight = FrontLeft.getCurrentPosition() * verticalRightMultiplier;
+        double originalLeft = BackRight.getCurrentPosition() * verticalLeftMultiplier;
+
+        double deltaRight = originalRight- (FrontLeft.getCurrentPosition()* verticalRightMultiplier);
+        double deltaLeft = (BackRight.getCurrentPosition() * verticalLeftMultiplier) - originalLeft;
+
+        double averageDifference = (deltaRight + deltaLeft)/2;
+
+        while (averageDifference<targetPos){
+            FrontLeft.setPower(speed);
+            FrontRight.setPower(-speed);
+            BackLeft.setPower(speed);
+            BackRight.setPower(-speed);
+
+            deltaRight = originalRight- (FrontLeft.getCurrentPosition() * verticalRightMultiplier);
+            deltaLeft = (BackRight.getCurrentPosition() * verticalLeftMultiplier) - originalLeft;
+
+            averageDifference = (deltaRight + deltaLeft)/2;
+        }
+
+
+        FrontLeft.setPower(0);
+        FrontRight.setPower(0);
+        BackLeft.setPower(0);
+        BackRight.setPower(0);
+
 
     }
 
@@ -460,65 +373,7 @@ public class Hardwaremap {
         FrontRight.setPower(0);
     }
 */
-    public void turn(String direction, double speed, double degrees) throws InterruptedException {
-        double inches = (degrees / 360) * Circumference;
-        if (direction == "right") {
-            inches = -inches;
 
-        }
-        if (direction == "left") {
-            inches = inches;
-
-        }
-        int newfrontLeftTarget;
-        int newfrontRightTarget;
-        int newbackLeftTarget;
-        int newbackRightTarget;
-
-        // Determine new target position, and pass to motor controller
-        newfrontLeftTarget = FrontLeft.getCurrentPosition() + (int) (-inches * COUNTS_PER_INCH);
-        newfrontRightTarget = FrontRight.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-        newbackLeftTarget = BackLeft.getCurrentPosition() + (int) (-inches * COUNTS_PER_INCH);
-        newbackRightTarget = BackRight.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-        FrontLeft.setTargetPosition(newfrontLeftTarget);
-        FrontRight.setTargetPosition(newfrontRightTarget);
-        BackLeft.setTargetPosition(newbackLeftTarget);
-        BackRight.setTargetPosition(newbackRightTarget);
-
-        // Turn On RUN_TO_POSITION
-        FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        FrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BackRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // reset the timeout time and start motion.
-        FrontLeft.setPower(Math.abs(-speed*FL));
-        FrontRight.setPower(Math.abs(-speed*FR));
-        BackRight.setPower(Math.abs(-speed*BR));
-        BackLeft.setPower(Math.abs(-speed*BL));
-        // keep looping while we are still active, and there is time left, and both motors are running.
-        // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-        // its target position, the motion will stop.  This is "safer" in the event that the robot will
-        // always end the motion as soon as possible.
-        // However, if you require that BOTH motors have finished their moves before the robot continues
-        // onto the next step, use (isBusy() || isBusy()) in the loop test.
-        while (FrontLeft.isBusy() && BackLeft.isBusy() && FrontRight.isBusy() && BackRight.isBusy()) {
-        }
-
-        // Stop all motion;
-        FrontLeft.setPower(0);
-        FrontRight.setPower(0);
-        BackLeft.setPower(0);
-        BackRight.setPower(0);
-
-
-        // Turn off RUN_TO_POSITION
-        FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-    }
 
 
 }
