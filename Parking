@@ -1,0 +1,62 @@
+package org.firstinspires.ftc.teamcode.Autonomous;
+
+
+
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.HardwareMap.LegitbotV1;
+
+
+@Autonomous (name = "Parking")
+//@Disabled
+public class Parking extends LinearOpMode {
+
+    public static double SkystonePlacement = 0;
+    LegitbotV1 robot = new LegitbotV1();   // Use a Pushbot's hardware
+    double robotSpeed = .6;
+    double strafeSpeed = .6;
+
+
+    private ElapsedTime runtime = new ElapsedTime();
+    @Override
+    public void runOpMode() throws InterruptedException {
+        robot.init(hardwareMap);
+
+        waitForStart();
+        //code goes here
+
+        /*robot.driveForward(1,72);
+        sleep(250);
+        robot.strafeRight(1,12);
+        sleep(250);
+        */
+        robot.turnRight(.5,360);
+
+
+
+
+
+
+
+    }
+    //@Override
+    public void startIntake(int speed, int time) {
+        robot.Intake.setPower(speed);
+        sleep(time);
+    }
+
+    //@Override
+    public void startOutake(int speed, int time) {
+        robot.WheelOutake.setPower(speed);
+        sleep(time);
+
+    }
+}
