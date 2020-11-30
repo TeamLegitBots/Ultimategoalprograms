@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode;
+
+package org.firstinspires.ftc.teamcode.HardwareMap;
 
 import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -22,15 +23,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-public class Hardwaremap {
+public class LegitbotV1 {
     public static final double FR = 1;
     public  static final double FL = 1;
     public static final double BR = 1;
     public static final double BL = 1;
 
     public static final int horizontalMultiplier = 1;
-    public static final int verticalLeftMultiplier = 1;
-    public static final int verticalRightMultiplier = 1;
+    public static final int verticalLeftMultiplier = -1;
+    public static final int verticalRightMultiplier = -1;
 
 
 
@@ -69,12 +70,13 @@ public class Hardwaremap {
     final float[] values = hsvValues;
 
 
-    static final double COUNTS_PER_MOTOR_REV = 2240;    // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION = 0.37727198;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES = 3.85;     // For figuring circumference
+    static final double COUNTS_PER_MOTOR_REV = 1300;    // eg: TETRIX Motor Encoder
+    static final double DRIVE_GEAR_REDUCTION = 1;     // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES = 1.49606;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double Circumference = 62.1;
+    static final double Circumference = 40.6;
+
 
 
 
@@ -82,7 +84,7 @@ public class Hardwaremap {
     HardwareMap hwMap = null;
     private ElapsedTime period = new ElapsedTime();
 
-    public Hardwaremap() {
+    public LegitbotV1() {
 
     }
 
@@ -147,6 +149,11 @@ public class Hardwaremap {
         BackRight.setDirection(DcMotor.Direction.FORWARD);
         BackLeft.setDirection(DcMotor.Direction.REVERSE);
 
+        FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
     }
 
@@ -173,6 +180,8 @@ public class Hardwaremap {
             BackLeft.setPower(speed);
             BackRight.setPower(speed);
             average = ((FrontLeft.getCurrentPosition() * verticalRightMultiplier) + (BackRight.getCurrentPosition() * verticalLeftMultiplier))/2;
+
+
         }
         // Stop all motion;
         FrontLeft.setPower(0);
