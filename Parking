@@ -33,12 +33,56 @@ public class Parking extends LinearOpMode {
         waitForStart();
         //code goes here
 
-        /*robot.driveForward(1,72);
+        robot.driveForward(1,60);
         sleep(250);
-        robot.strafeRight(1,12);
+        robot.strafeRight(1,22);
         sleep(250);
-        */
-        robot.turnRight(.5,360);
+       robot.Backservo.setPosition(1);
+       sleep(250);
+       robot.Backservo.setPosition(0);
+       sleep(500);
+    robot.Ring_gate.setPosition(2.5);
+        sleep(500);
+
+     telemetry.addData("ring_gate pos", robot.Ring_gate.getPosition());
+     telemetry.update();
+        robot.Backservo.setPosition(1);
+        sleep(250);
+        robot.Backservo.setPosition(0);
+        sleep(500);
+
+
+        robot.WheelOutake.setPower(0.485);
+        sleep(1000);
+        robot.Pulley.setPower(1);
+        sleep(500);
+        robot.Pulley.setPower(0);
+        //robot.WheelOutake.setPower(0);
+
+        robot.strafeRight(1,5.5);
+
+        //robot.WheelOutake.setPower(0.5);
+        robot.WheelOutake.setPower(0.48);
+        sleep(1000);
+        robot.Pulley.setPower(1);
+        sleep(500);
+        robot.Pulley.setPower(0);
+
+
+        robot.strafeRight(1,5);
+        robot.WheelOutake.setPower(0.485);
+        sleep(1000);
+        robot.Pulley.setPower(1);
+        sleep(750);
+        robot.Pulley.setPower(0);
+        robot.WheelOutake.setPower(0);
+
+
+        robot.driveForward(1,6);
+        // robot.Intake.setPower(1);
+        //robot.Pulley.setPower(1);
+        //sleep(300);
+        //robot.turnRight(.5,360);
 
 
 
