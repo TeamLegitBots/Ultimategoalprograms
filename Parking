@@ -65,6 +65,8 @@ public class Parking extends LinearOpMode {
         ElapsedTime  runtime = new ElapsedTime();
 
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+
 
 
         waitForStart();
@@ -96,7 +98,7 @@ public class Parking extends LinearOpMode {
 
         robot.driveForward(1,60);
         sleep(250);
-        robot.strafeRight(1,22);
+        robot.strafeRight(1,21);
         sleep(250);
         robot.Backservo.setPosition(1);
         sleep(250);
@@ -123,7 +125,7 @@ public class Parking extends LinearOpMode {
         robot.strafeRight(1,4);
 
         //robot.WheelOutake.setPower(0.5);
-        robot.WheelOutake.setPower(0.495);
+        robot.WheelOutake.setPower(0.485);
         sleep(1000);
         robot.Pulley.setPower(1);
         sleep(500);
@@ -131,7 +133,7 @@ public class Parking extends LinearOpMode {
 
 
         robot.strafeRight(1,5);
-        robot.WheelOutake.setPower(0.485);
+        robot.WheelOutake.setPower(0.48);
         sleep(1000);
         robot.Pulley.setPower(1);
         sleep(750);
@@ -139,10 +141,45 @@ public class Parking extends LinearOpMode {
         robot.WheelOutake.setPower(0);
 
 
-        robot.turnRight(1,180);
+
+
 
         if (position == Parking.SkystoneDeterminationPipeline.RingPosition.NONE){
-            robot.driveForward(1, 60);
+            robot.turnRight(1,180);
+            sleep(250);
+            robot.strafeRight(1, 48);
+            robot.Wgoalservo.setPosition(1);
+            sleep(2000);
+            robot.strafeLeft(1, 20);
+            sleep(250);
+            robot.driveBack(1,6);
+        }
+
+        if (position == Parking.SkystoneDeterminationPipeline.RingPosition.ONE){
+            robot.turnRight(1,180);
+            sleep(250);
+            robot.strafeRight(1, 30);
+            sleep(250);
+            robot.driveBack(1, 30);
+            robot.Wgoalservo.setPosition(1);
+            sleep(2000);
+            robot.strafeLeft(1, 24);
+            sleep(250);
+            robot.driveForward(1, 18);
+
+        }
+        if (position == Parking.SkystoneDeterminationPipeline.RingPosition.FOUR){
+            robot.turnLeft(1,90);
+            sleep(250);
+            robot.driveForward(1, 48);
+            sleep(250);
+            robot.strafeRight(1,54);
+            robot.Wgoalservo.setPosition(1);
+            sleep(2000);
+            robot.strafeLeft(1,36);
+            sleep(250);
+            robot.driveBack(1, 26);
+
         }
 
 
