@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.HardwareMap.LegitbotV1;
 
 
-@TeleOp(name = "MyTeleop")
+@TeleOp(name = "ASMyTeleop")
 //@Disabled
 public class TeleopV1 extends LinearOpMode {
 
@@ -28,7 +28,7 @@ public class TeleopV1 extends LinearOpMode {
 
         robot.init(hardwareMap);
 
-        robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+        robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
@@ -95,14 +95,14 @@ public class TeleopV1 extends LinearOpMode {
             */
             setDriveMotorPower();
 
-            
-            if (gamepad2.left_bumper && outtake<-.1){
+            telemetry.addData("2: left bumper", gamepad2.left_bumper);
+            telemetry.update();
+            if (gamepad2.left_bumper){
                 robot.WheelOutake.setPower(powershotspeed);
-            } else if(outtake<-.1){
+            } else if (outtake>.5){
                 robot.WheelOutake.setPower(shooterspeed);
             } else{
                 robot.WheelOutake.setPower(0);
-
             }
             //automatic ringgate
             /*if ((outtake<-.1 && intake>.1) || (intake<-.1 )){
@@ -245,7 +245,7 @@ public class TeleopV1 extends LinearOpMode {
 
                 sensitivity = sensitivity - .1;
             }
-            telemetry.addData("sensitivity: ", sensitivity);
+            telemetry.addData("sensitivity now: ", sensitivity);
             telemetry.update();
 
 
