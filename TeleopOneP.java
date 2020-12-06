@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.robot.Robot;
@@ -9,13 +10,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.HardwareMap.LegitbotV1;
 
 
-@TeleOp(name = "TeleopOneP")
+@TeleOp(name = "ASTeleopOneP")
 //@Disabled
 public class TeleopOneP extends LinearOpMode {
 
-    Hardwaremap robot = new Hardwaremap();
+    LegitbotV1 robot = new LegitbotV1();
     
     double sensitivity = 2;
 
@@ -27,7 +29,9 @@ public class TeleopOneP extends LinearOpMode {
 
 
         robot.init(hardwareMap);
-        
+        telemetry.addData("right bumper1", gamepad1.right_bumper);
+        telemetry.update();
+
         robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         
@@ -35,11 +39,7 @@ public class TeleopOneP extends LinearOpMode {
         robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        
-        robot.FrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.FrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.BackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.BackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -47,12 +47,13 @@ public class TeleopOneP extends LinearOpMode {
         
         int WA_pos_1 = original_WA_pos;
         int WA_pos_2 = original_WA_pos + 500;
-        int WA_pos_3 = original_WA_pos + 1400;
+        int WA_pos_3 = original_WA_pos + 1600;
 
         double wobble_goal_arm_pos = 1;
         double WAerror=0;
         int WAservo_pos =0;
-        double shooterspeed = .46;
+        double shooterspeed = .47;
+        double powershotspeed = .5;
 
 
         waitForStart();
@@ -91,11 +92,14 @@ public class TeleopOneP extends LinearOpMode {
             */
             setDriveMotorPower();
 
-            if (outtake>.5){
+            telemetry.addData("right bumper", gamepad1.right_bumper);
+            telemetry.update();
+            if (gamepad1.right_bumper){
+                robot.WheelOutake.setPower(powershotspeed);
+            } else if (outtake>.5){
                 robot.WheelOutake.setPower(shooterspeed);
             } else{
                 robot.WheelOutake.setPower(0);
-
             }
             //automatic ringgate
             /*if ((outtake<-.1 && intake>.1) || (intake<-.1 )){
