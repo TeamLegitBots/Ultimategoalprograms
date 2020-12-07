@@ -40,6 +40,8 @@ public class Parking extends LinearOpMode {
     double robotSpeed = .6;
     double strafeSpeed = .6;
 
+    private final Object       runningNotifier = new Object();
+
 
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -67,15 +69,23 @@ public class Parking extends LinearOpMode {
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
 
+        Parking.SkystoneDeterminationPipeline.RingPosition position = Parking.SkystoneDeterminationPipeline.RingPosition.FOUR;
+        position = pipeline.position;
+
+        telemetry.addData("Analysis", pipeline.getAnalysis());
+        telemetry.addData("Position", position);
+        telemetry.update();
+
 
 
         waitForStart();
 
+
+
         //code goes here
-        Parking.SkystoneDeterminationPipeline.RingPosition position = Parking.SkystoneDeterminationPipeline.RingPosition.FOUR;
         runtime.reset();
 
-        while (runtime.time() < 5 && opModeIsActive()) {
+        while (runtime.time() < 1 && opModeIsActive()) {
              position = pipeline.position;
 
             telemetry.addData("Analysis", pipeline.getAnalysis());
