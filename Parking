@@ -182,6 +182,16 @@ public class Parking extends LinearOpMode {
 
         }
 
+        robot.Wgoalservo.setPosition(0);
+        sleep(2000);
+
+        robot.Wgoalarm.setTargetPosition(robot.Wgoalarm.getCurrentPosition() - 500);
+        robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while(robot.Wgoalarm.isBusy()&&opModeIsActive()) {
+            robot.Wgoalarm.setPower(-1);
+        }
+        robot.Wgoalarm.setPower(0);
+
 
 
 
