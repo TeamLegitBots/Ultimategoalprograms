@@ -52,7 +52,7 @@ public class TeleopOneP extends LinearOpMode {
         double wobble_goal_arm_pos = 1;
         double WAerror=0;
         int WAservo_pos =0;
-        double shooterspeed = .47;
+        double shooterspeed = 1;//.47;
         double powershotspeed = .5;
 
 
@@ -83,7 +83,7 @@ public class TeleopOneP extends LinearOpMode {
             robot.Intake.setPower(-intake);
             //robot.WheelOutake.setPower(0.80 * (outtake));
             
-            robot.Pulley.setPower(intake);
+            robot.Pulley.setPower(-intake);
             /*
             robot.FrontRight.setPower(sensitivity * FR);
             robot.FrontLeft.setPower(sensitivity * FL );
@@ -113,11 +113,10 @@ public class TeleopOneP extends LinearOpMode {
             */
             
             //manual ringgate
-            if (gamepad1.dpad_right){
-                robot.Ring_gate.setPosition(1);
-            }
-            if(gamepad1.dpad_left){
-                robot.Ring_gate.setPosition(0);
+            if (gamepad1.x){
+                robot.Ring_gate.setPosition(.55);
+            }else{
+                robot.Ring_gate.setPosition(.8);
 
             }
             //move wobble goal arm servo
