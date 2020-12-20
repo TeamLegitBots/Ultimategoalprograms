@@ -46,8 +46,8 @@ public class TeleopOneP extends LinearOpMode {
         int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
         
         int WA_pos_1 = original_WA_pos;
-        int WA_pos_2 = original_WA_pos + 500;
-        int WA_pos_3 = original_WA_pos + 1600;
+        int WA_pos_2 = original_WA_pos + 400;
+        int WA_pos_3 = original_WA_pos + 1700;
 
         double wobble_goal_arm_pos = 1;
         double WAerror=0;
@@ -129,9 +129,9 @@ public class TeleopOneP extends LinearOpMode {
             
             //drop intake
             if (gamepad1.y){
-                robot.Backservo.setPosition(.25);
-            } else{
                 robot.Backservo.setPosition(.75);
+            } else{
+                robot.Backservo.setPosition(.25);
 
             }
 
