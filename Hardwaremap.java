@@ -142,13 +142,18 @@ public class LegitbotV1 {
         FrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        Pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Pulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         //Set the directino Reverse for the Right side motors so we can get all positive value inputs
         FrontRight.setDirection(DcMotor.Direction.FORWARD);
         FrontLeft.setDirection(DcMotor.Direction.REVERSE);
         BackRight.setDirection(DcMotor.Direction.FORWARD);
         BackLeft.setDirection(DcMotor.Direction.REVERSE);
+
+        Wgoalarm.setDirection(DcMotor.Direction.REVERSE);
+
 
         FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
