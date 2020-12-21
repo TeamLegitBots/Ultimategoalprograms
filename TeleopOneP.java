@@ -46,14 +46,14 @@ public class TeleopOneP extends LinearOpMode {
         int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
         
         int WA_pos_1 = original_WA_pos;
-        int WA_pos_2 = original_WA_pos + 400;
-        int WA_pos_3 = original_WA_pos + 1700;
+        int WA_pos_2 = original_WA_pos + 450;
+        int WA_pos_3 = original_WA_pos + 1500;
 
         double wobble_goal_arm_pos = 1;
         double WAerror=0;
         int WAservo_pos =0;
         double shooterspeed = 1;//.47;
-        double powershotspeed = .5;
+        double powershotspeed = .9;
 
 
         waitForStart();
@@ -64,6 +64,10 @@ public class TeleopOneP extends LinearOpMode {
             float intake = gamepad1.left_trigger;
             float wheelouttake = gamepad1.right_trigger;
             float outtake = gamepad1.right_trigger;
+
+            if (gamepad1.left_bumper){
+                intake = -1;
+            }
 
             // Code for the four drive motors
             /*float drive = -gamepad1.right_stick_x;
@@ -84,6 +88,7 @@ public class TeleopOneP extends LinearOpMode {
             //robot.WheelOutake.setPower(0.80 * (outtake));
             
             robot.Pulley.setPower(-intake);
+
             /*
             robot.FrontRight.setPower(sensitivity * FR);
             robot.FrontLeft.setPower(sensitivity * FL );
