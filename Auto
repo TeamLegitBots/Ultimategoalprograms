@@ -115,8 +115,11 @@ public class Auto extends LinearOpMode {
 
         robot.strafeRight(speed,12.5);
 
-        robot.Backservo.setPosition(.75);
+        if (position == Auto.SkystoneDeterminationPipeline.RingPosition.FOUR) {
 
+            robot.Backservo.setPosition(.75);
+
+        }
 
         robot.Ring_gate.setPosition(.55);
         sleep(500);
@@ -138,6 +141,38 @@ public class Auto extends LinearOpMode {
 
 
         if (position == Auto.SkystoneDeterminationPipeline.RingPosition.NONE){
+            robot.WheelOutake.setPower(0);
+            robot.driveForward(speed,6);
+            sleep(250);
+            robot.strafeLeft(speed,15);
+
+            robot.Wgoalservo.setPosition(1);
+            sleep(1000);
+
+            robot.strafeRight(speed,54);
+            sleep(250);
+            robot.driveBack(speed,54);
+            sleep(250);
+            robot.strafeLeft(0.5,4);
+            robot.Wgoalarm.setPower(0);
+
+            robot.Wgoalservo.setPosition(0);
+            sleep(2000);
+            robot.driveForward(speed,57);
+            sleep(250);
+            robot.strafeLeft(speed,35);
+            robot.Wgoalarm.setPower(1);
+
+            robot.Wgoalservo.setPosition(1);
+            sleep(1000);
+
+            robot.Backservo.setPosition(.75);
+
+            robot.strafeRight(speed,24);
+            sleep(250);
+            robot.driveForward(speed,6);
+
+
 
 
         }
