@@ -117,7 +117,7 @@ public class Auto extends LinearOpMode {
 
         robot.strafeRight(speed,12.5);
 
-        if (position == Auto.SkystoneDeterminationPipeline.RingPosition.FOUR) {
+        if (position == Auto.SkystoneDeterminationPipeline.RingPosition.FOUR || position == Auto.SkystoneDeterminationPipeline.RingPosition.ONE) {
 
             robot.Backservo.setPosition(.75);
 
@@ -156,7 +156,6 @@ public class Auto extends LinearOpMode {
             robot.driveBack(speed,57);
             sleep(250);
             robot.strafeLeft(0.5,4);
-            robot.Wgoalarm.setPower(0);
 
             robot.Wgoalservo.setPosition(0);
             sleep(2000);
@@ -180,6 +179,57 @@ public class Auto extends LinearOpMode {
         }
 
         if (position == Auto.SkystoneDeterminationPipeline.RingPosition.ONE){
+            robot.Intake.setPower(-1);
+            robot.Pulley.setPower(-1);
+
+            robot.strafeRight(.5,3);
+            sleep(250);
+            robot.driveBack(speed,10);
+            sleep(2000);
+            robot.driveForward(speed,9);
+            sleep(250);
+            robot.strafeLeft(.5,7);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+
+
+            robot.Intake.setPower(0);
+            robot.Pulley.setPower(0);
+
+            robot.WheelOutake.setPower(0);
+
+            robot.turnLeft(speed,180);
+            sleep(250);
+            robot.strafeRight(speed,6);
+            sleep(250);
+            robot.driveBack(speed,42);
+
+            robot.Wgoalservo.setPosition(1);
+            sleep(1000);
+
+            robot.strafeRight(speed,6);
+            sleep(250);
+            robot.driveForward(speed,88);
+            sleep(250);
+            robot.strafeLeft(speed,14);
+
+            robot.Wgoalservo.setPosition(0);
+            sleep(2000);
+
+            robot.strafeRight(speed,6);
+            sleep(250);
+            robot.driveBack(speed,80);
+
+            robot.Wgoalservo.setPosition(1);
+            sleep(1000);
+
+            robot.strafeRight(speed,6);
+            sleep(250);
+            robot.driveForward(speed,18);
+
+
 
         }
         if (position == Auto.SkystoneDeterminationPipeline.RingPosition.FOUR){
