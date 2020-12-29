@@ -52,14 +52,17 @@ public class TeleopOneP extends LinearOpMode {
         double wobble_goal_arm_pos = 1;
         double WAerror=0;
         int WAservo_pos =0;
-        double shooterspeed = 1;//.47;
-        double powershotspeed = .9;
+        double shooterspeed = 1;
+        double powershotspeed = .87;
 
 
         waitForStart();
 
 
         while (opModeIsActive()) {
+
+            telemetry.addData("horizontal encoder", robot.BackLeft.getCurrentPosition());
+            telemetry.update();
             
             float intake = gamepad1.left_trigger;
             float wheelouttake = gamepad1.right_trigger;
@@ -125,10 +128,10 @@ public class TeleopOneP extends LinearOpMode {
 
             }
             //move wobble goal arm servo
-            if (gamepad1.a){
+            if (gamepad1.a  && wobble_goal_arm_pos !=1){
                 robot.Wgoalservo.setPosition(0);
             }
-            if (gamepad1.b && wobble_goal_arm_pos !=1){
+            if (gamepad1.b){
                 robot.Wgoalservo.setPosition(1);
             }
             
@@ -146,6 +149,7 @@ public class TeleopOneP extends LinearOpMode {
             
 
             // Stop if not linear motion kit input
+            /*
             if(gamepad1.left_trigger == 0 && gamepad1.right_trigger == 0) {
 
 
@@ -153,7 +157,7 @@ public class TeleopOneP extends LinearOpMode {
 
          
             
-
+*/
            
 
             //wobble goal arm
