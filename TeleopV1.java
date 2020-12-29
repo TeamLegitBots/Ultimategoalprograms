@@ -18,7 +18,7 @@ public class TeleopV1 extends LinearOpMode {
 
     LegitbotV1 robot = new LegitbotV1();
 
-    double sensitivity = .5;
+    double sensitivity = 1;
 
 
 
@@ -48,14 +48,14 @@ public class TeleopV1 extends LinearOpMode {
         int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
 
         int WA_pos_1 = original_WA_pos;
-        int WA_pos_2 = original_WA_pos + 500;
-        int WA_pos_3 = original_WA_pos + 1400;
+        int WA_pos_2 = original_WA_pos + 450;
+        int WA_pos_3 = original_WA_pos + 1500;
 
         double wobble_goal_arm_pos = 1;
         double WAerror=0;
         int WAservo_pos =0;
-        double shooterspeed = .47;
-        double powershotspeed = .5;
+        double shooterspeed = 1;
+        double powershotspeed = .87;
 
 
         waitForStart();
@@ -86,7 +86,7 @@ public class TeleopV1 extends LinearOpMode {
             robot.Intake.setPower(-intake);
             //robot.WheelOutake.setPower(0.80 * (outtake));
 
-            robot.Pulley.setPower(intake);
+            robot.Pulley.setPower(-intake);
             /*
             robot.FrontRight.setPower(sensitivity * FR);
             robot.FrontLeft.setPower(sensitivity * FL );
@@ -97,9 +97,9 @@ public class TeleopV1 extends LinearOpMode {
 
             telemetry.addData("2: left bumper", gamepad2.left_bumper);
             telemetry.update();
-            if (gamepad2.left_bumper){
+            if (gamepad2.left_bumper && outtake<-.5){
                 robot.WheelOutake.setPower(powershotspeed);
-            } else if (outtake>.5){
+            } else if (outtake<-.5){
                 robot.WheelOutake.setPower(shooterspeed);
             } else{
                 robot.WheelOutake.setPower(0);
@@ -116,26 +116,26 @@ public class TeleopV1 extends LinearOpMode {
             */
 
             //manual ringgate
-            if (gamepad2.dpad_right){
-                robot.Ring_gate.setPosition(1);
-            }
-            if(gamepad2.dpad_left){
-                robot.Ring_gate.setPosition(0);
+            if (gamepad2.x){
+                robot.Ring_gate.setPosition(.55);
+            }else{
+                robot.Ring_gate.setPosition(.8);
 
             }
+
             //move wobble goal arm servo
-            if (gamepad2.a){
+            if (gamepad2.a  && wobble_goal_arm_pos !=1){
                 robot.Wgoalservo.setPosition(0);
             }
-            if (gamepad2.b && wobble_goal_arm_pos !=1){
+            if (gamepad2.b){
                 robot.Wgoalservo.setPosition(1);
             }
 
             //drop intake
             if (gamepad2.y){
-                robot.Backservo.setPosition(.25);
-            } else{
                 robot.Backservo.setPosition(.75);
+            } else{
+                robot.Backservo.setPosition(.25);
 
             }
 
@@ -145,12 +145,13 @@ public class TeleopV1 extends LinearOpMode {
 
 
             // Stop if not linear motion kit input
+            /*
             if(gamepad1.left_trigger == 0 && gamepad1.right_trigger == 0) {
 
 
             }
 
-
+*/
 
 
 
