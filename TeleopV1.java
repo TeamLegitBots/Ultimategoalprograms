@@ -47,9 +47,9 @@ public class TeleopV1 extends LinearOpMode {
 
         int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
 
-        int WA_pos_1 = original_WA_pos;
-        int WA_pos_2 = original_WA_pos + 450;
-        int WA_pos_3 = original_WA_pos + 1500;
+        int WA_pos_1 = original_WA_pos-450;
+        int WA_pos_2 = original_WA_pos;
+        int WA_pos_3 = original_WA_pos + 1500-450;
 
         double wobble_goal_arm_pos = 1;
         double WAerror=0;
