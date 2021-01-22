@@ -45,8 +45,9 @@ public class LocalizationTest extends LinearOpMode {
             }
 
             if(gamepad1.a) {
+                drive.setMotorPowers(0,0,0,0);
                 Trajectory myTrajectory = drive.trajectoryBuilder(myPose)
-                        .splineToLinearHeading(new Pose2d(-66,-27, Math.toRadians(0)),Math.toRadians(0))
+                        .splineToLinearHeading(new Pose2d(-50,0, Math.toRadians(90)),Math.toRadians(0))
                         .build();
 
 
