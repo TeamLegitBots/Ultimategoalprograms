@@ -1,16 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.robot.Robot;
-import com.qualcomm.robotcore.util.Hardware;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.HardwareMap.LegitbotV1;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
 @TeleOp(name = "ASTeleopOneP")
@@ -18,14 +15,15 @@ import org.firstinspires.ftc.teamcode.HardwareMap.LegitbotV1;
 public class TeleopOneP extends LinearOpMode {
 
     LegitbotV1 robot = new LegitbotV1();
-    
+
     double sensitivity = 2;
 
-    
 
-  
     @Override
     public void runOpMode() throws InterruptedException {
+
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         robot.init(hardwareMap);
@@ -34,24 +32,25 @@ public class TeleopOneP extends LinearOpMode {
 
         robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        
+
+        /*
         robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
+*/
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
-        
-        int WA_pos_1 = original_WA_pos-450;
+
+        int WA_pos_1 = original_WA_pos - 450;
         int WA_pos_2 = original_WA_pos;
-        int WA_pos_3 = original_WA_pos + 1500-450;
+        int WA_pos_3 = original_WA_pos + 1500 - 450;
 
         double wobble_goal_arm_pos = 1;
-        double WAerror=0;
-        int WAservo_pos =0;
+        double WAerror = 0;
+        int WAservo_pos = 0;
         double shooterspeed = 1;
         double powershotspeed = .87;
 
@@ -61,14 +60,33 @@ public class TeleopOneP extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            telemetry.addData("horizontal encoder", robot.BackLeft.getCurrentPosition());
-            telemetry.update();
-            
+            //auto aim:
+            drive.update();
+
+            // Retrieve your pose
+            Pose2d myPose = drive.getPoseEstimate();
+
+            if (gamepad1.dpad_right) {
+                drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+            }
+
+            if (gamepad1.dpad_left) {
+                drive.setMotorPowers(0, 0, 0, 0);
+                Trajectory myTrajectory = drive.trajectoryBuilder(myPose)
+                        .lineToLinearHeading(new Pose2d(-50, 0, Math.toRadians(90)))
+                        .build();
+
+                drive.followTrajectory(myTrajectory);
+            }
+
+            //telemetry.addData("horizontal encoder", robot.BackLeft.getCurrentPosition());
+            //telemetry.update();
+
             float intake = gamepad1.left_trigger;
             float wheelouttake = gamepad1.right_trigger;
             float outtake = gamepad1.right_trigger;
 
-            if (gamepad1.left_bumper){
+            if (gamepad1.left_bumper) {
                 intake = -1;
             }
 
@@ -85,11 +103,11 @@ public class TeleopOneP extends LinearOpMode {
             float BL = -drive  - turn - strafe;
             
             */
-            
-            
+
+
             robot.Intake.setPower(-intake);
             //robot.WheelOutake.setPower(0.80 * (outtake));
-            
+
             robot.Pulley.setPower(-intake);
 
             /*
@@ -98,15 +116,21 @@ public class TeleopOneP extends LinearOpMode {
             robot.BackRight.setPower(sensitivity * BR);
             robot.BackLeft.setPower(sensitivity * BL);
             */
-            setDriveMotorPower();
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    )
+            );
 
             telemetry.addData("right bumper", gamepad1.right_bumper);
             telemetry.update();
-            if (gamepad1.right_bumper){
+            if (gamepad1.right_bumper) {
                 robot.WheelOutake.setPower(powershotspeed);
-            } else if (outtake>.5){
+            } else if (outtake > .5) {
                 robot.WheelOutake.setPower(shooterspeed);
-            } else{
+            } else {
                 robot.WheelOutake.setPower(0);
             }
             //automatic ringgate
@@ -119,34 +143,33 @@ public class TeleopOneP extends LinearOpMode {
         
             
             */
-            
+
             //manual ringgate
-            if (gamepad1.x){
+            if (gamepad1.x) {
                 robot.Ring_gate.setPosition(.55);
-            }else{
+            } else {
                 robot.Ring_gate.setPosition(.8);
 
             }
             //move wobble goal arm servo
-            if (gamepad1.a  && wobble_goal_arm_pos !=1){
+            if (gamepad1.a && wobble_goal_arm_pos != 1) {
                 robot.Wgoalservo.setPosition(0);
             }
-            if (gamepad1.b){
+            if (gamepad1.b) {
                 robot.Wgoalservo.setPosition(1);
             }
-            
+
             //drop intake
-            if (gamepad1.y){
+            if (gamepad1.y) {
                 robot.Backservo.setPosition(.75);
-            } else{
+            } else {
                 robot.Backservo.setPosition(.25);
 
             }
 
 
-           
             // Drag the sparkmini system down
-            
+
 
             // Stop if not linear motion kit input
             /*
@@ -158,16 +181,16 @@ public class TeleopOneP extends LinearOpMode {
          
             
 */
-           
+
 
             //wobble goal arm
-            
-            if(gamepad1.dpad_up && wobble_goal_arm_pos<3){
-                wobble_goal_arm_pos = wobble_goal_arm_pos+1;
+
+            if (gamepad1.dpad_up && wobble_goal_arm_pos < 3) {
+                wobble_goal_arm_pos = wobble_goal_arm_pos + 1;
                 sleep(500);
             }
-            if(gamepad1.dpad_down && wobble_goal_arm_pos>1){
-                wobble_goal_arm_pos = wobble_goal_arm_pos-1; 
+            if (gamepad1.dpad_down && wobble_goal_arm_pos > 1) {
+                wobble_goal_arm_pos = wobble_goal_arm_pos - 1;
                 sleep(500);
 
             }
@@ -176,68 +199,86 @@ public class TeleopOneP extends LinearOpMode {
             //telemetry.update();
 
             //move Wgoal arm to position 1
-            if (wobble_goal_arm_pos == 1 && (robot.Wgoalarm.getCurrentPosition() < WA_pos_1 - WAerror || robot.Wgoalarm.getCurrentPosition() > WA_pos_1 + WAerror )){
+            if (wobble_goal_arm_pos == 1 && (robot.Wgoalarm.getCurrentPosition() < WA_pos_1 - WAerror || robot.Wgoalarm.getCurrentPosition() > WA_pos_1 + WAerror)) {
                 robot.Wgoalarm.setTargetPosition(WA_pos_1);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                if (robot.Wgoalarm.getCurrentPosition()>WA_pos_1){
+                if (robot.Wgoalarm.getCurrentPosition() > WA_pos_1) {
                     robot.Wgoalarm.setPower(-1);
                 } else {
                     robot.Wgoalarm.setPower(1);
                 }
-                while(robot.Wgoalarm.isBusy()&&opModeIsActive()){
-                    setDriveMotorPower();
+                while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
+                    drive.setWeightedDrivePower(
+                            new Pose2d(
+                                    -gamepad1.left_stick_y,
+                                    -gamepad1.left_stick_x,
+                                    -gamepad1.right_stick_x
+                            )
+                    );
 
                 }
                 robot.Wgoalarm.setPower(0);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            } 
+            }
             //telemetry.addData("target position",wobble_goal_arm_pos);
             //telemetry.addData("current position",robot.Wgoalarm.getCurrentPosition());
             //telemetry.update();
             //move Wgoal arm to position 2
-            if (wobble_goal_arm_pos == 2 && (robot.Wgoalarm.getCurrentPosition() < WA_pos_2 - WAerror || robot.Wgoalarm.getCurrentPosition() > WA_pos_2 + WAerror )){
+            if (wobble_goal_arm_pos == 2 && (robot.Wgoalarm.getCurrentPosition() < WA_pos_2 - WAerror || robot.Wgoalarm.getCurrentPosition() > WA_pos_2 + WAerror)) {
                 robot.Wgoalarm.setTargetPosition(WA_pos_2);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                
 
-                if (robot.Wgoalarm.getCurrentPosition()>WA_pos_2){
+
+                if (robot.Wgoalarm.getCurrentPosition() > WA_pos_2) {
                     robot.Wgoalarm.setPower(-1);
                 } else {
                     robot.Wgoalarm.setPower(1);
                 }
-                while(robot.Wgoalarm.isBusy() && opModeIsActive()){
-                    setDriveMotorPower();
+                while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
+                    drive.setWeightedDrivePower(
+                            new Pose2d(
+                                    -gamepad1.left_stick_y,
+                                    -gamepad1.left_stick_x,
+                                    -gamepad1.right_stick_x
+                            )
+                    );
 
                 }
                 robot.Wgoalarm.setPower(0);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            } 
+            }
             //move Wgoal arm to position 3
-            if (wobble_goal_arm_pos == 3 && (robot.Wgoalarm.getCurrentPosition() < WA_pos_3 - WAerror || robot.Wgoalarm.getCurrentPosition() > WA_pos_3 + WAerror) ){
+            if (wobble_goal_arm_pos == 3 && (robot.Wgoalarm.getCurrentPosition() < WA_pos_3 - WAerror || robot.Wgoalarm.getCurrentPosition() > WA_pos_3 + WAerror)) {
                 robot.Wgoalarm.setTargetPosition(WA_pos_3);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                if (robot.Wgoalarm.getCurrentPosition()>WA_pos_3){
+                if (robot.Wgoalarm.getCurrentPosition() > WA_pos_3) {
                     robot.Wgoalarm.setPower(-1);
                 } else {
                     robot.Wgoalarm.setPower(1);
                 }
-                while(robot.Wgoalarm.isBusy()&&opModeIsActive()){
-                    setDriveMotorPower();
+                while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
+                    drive.setWeightedDrivePower(
+                            new Pose2d(
+                                    -gamepad1.left_stick_y,
+                                    -gamepad1.left_stick_x,
+                                    -gamepad1.right_stick_x
+                            )
+                    );
                 }
                 robot.Wgoalarm.setPower(0);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-            
-            
-            
 
-            }             
-            
+
         }
-        
-        public void setDriveMotorPower(){      
+
+    }
+
+    //public void setDriveMotorPower() {
+
+        /*
             float drive = -gamepad1.right_stick_x;
             float strafe = gamepad1.left_stick_x;
             float turn = gamepad1.left_stick_y;
@@ -251,9 +292,14 @@ public class TeleopOneP extends LinearOpMode {
             robot.FrontLeft.setPower(sensitivity * FL );
             robot.BackRight.setPower(sensitivity * BR);
             robot.BackLeft.setPower(sensitivity * BL);
-        }
-        
-}
+
+         */
+
+
+
+
+    }
+
 
 
     
