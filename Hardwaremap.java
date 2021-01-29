@@ -1,16 +1,11 @@
 
 package org.firstinspires.ftc.teamcode.HardwareMap;
 
-import com.qualcomm.hardware.motors.GoBILDA5202Series;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import static java.lang.Thread.sleep;
 
 
 /**
@@ -24,7 +19,7 @@ import static java.lang.Thread.sleep;
  */
 
 public class LegitbotV1 {
-    public static final double FR = 1;
+    /*public static final double FR = 1;
     public  static final double FL = 1;
     public static final double BR = 1;
     public static final double BL = 1;
@@ -34,13 +29,15 @@ public class LegitbotV1 {
     public static final int verticalRightMultiplier = -1;
 
 
-
+*/
     /* Public OpMode members. */
-
+/*
     public DcMotor FrontRight = null;
     public DcMotor FrontLeft = null;
     public DcMotor BackRight = null;
     public DcMotor BackLeft = null;
+
+ */
     public DcMotor WheelOutake = null;
     public DcMotor Pulley = null;
     public DcMotor Intake = null;
@@ -94,12 +91,14 @@ public class LegitbotV1 {
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         this.hwMap = ahwMap;
-
+/*
         // Define and Initialize Motors
         FrontRight = hwMap.get(DcMotor.class, "FR");
         FrontLeft = hwMap.get(DcMotor.class, "FL");
         BackRight = hwMap.get(DcMotor.class, "BR");
         BackLeft = hwMap.get(DcMotor.class, "BL");
+
+ */
         WheelOutake = hwMap.get(DcMotor.class, "WO");
         Pulley = hwMap.get(DcMotor.class, "P");
         Intake = hwMap.get(DcMotor.class, "I");
@@ -123,10 +122,13 @@ public class LegitbotV1 {
 
 
         // Set all motors to zero power
+        /*
         FrontLeft.setPower(0);
         BackLeft.setPower(0);
         BackRight.setPower(0);
         FrontRight.setPower(0);
+
+         */
         Pulley.setPower(0);
         Intake.setPower(0);
         Wgoalarm.setPower(0);
@@ -137,38 +139,48 @@ public class LegitbotV1 {
 
 
         //Tells robot is using encoders
+        /*
         FrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+         */
         WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         Pulley.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         //Set the directino Reverse for the Right side motors so we can get all positive value inputs
+        /*
         FrontRight.setDirection(DcMotor.Direction.FORWARD);
         FrontLeft.setDirection(DcMotor.Direction.REVERSE);
         BackRight.setDirection(DcMotor.Direction.FORWARD);
         BackLeft.setDirection(DcMotor.Direction.REVERSE);
 
+         */
+
         Wgoalarm.setDirection(DcMotor.Direction.REVERSE);
 
-
+/*
         FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+ */
 
 
 
     }
 
     public void stop() throws InterruptedException {
+        /*
         BackLeft.setPower(0);
         BackRight.setPower(0);
         FrontLeft.setPower(0);
         FrontRight.setPower(0);
+         */
     }
 
     /* for reference:
@@ -176,6 +188,8 @@ public class LegitbotV1 {
         back right motor = vertical left encoder
         back left motor = horizontal encoder
      */
+
+    /*
     public void driveForward(double speed, double inches) throws InterruptedException {
 
         double average = ((FrontLeft.getCurrentPosition() * verticalRightMultiplier) + (BackRight.getCurrentPosition() * verticalLeftMultiplier))/2;
