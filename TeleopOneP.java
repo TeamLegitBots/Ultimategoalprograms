@@ -71,13 +71,40 @@ public class TeleopOneP extends LinearOpMode {
             }
 
             if (gamepad1.dpad_left) {
+                robot.WheelOutake.setPower(shooterspeed);
+
+                robot.Intake.setPower(-1);
+                robot.Pulley.setPower(-1);
+
                 drive.setMotorPowers(0, 0, 0, 0);
                 Trajectory myTrajectory = drive.trajectoryBuilder(myPose)
-                        .lineToLinearHeading(new Pose2d(-50, 0, Math.toRadians(90)))
+                        .lineToLinearHeading(new Pose2d(-54, 0, Math.toRadians(90)))
                         .build();
 
                 drive.followTrajectory(myTrajectory);
-            }
+
+                while (opModeIsActive()) {
+                    if (gamepad1.dpad_left) {
+                        break;
+                    }
+                }
+
+                    robot.Ring_gate.setPosition(.55);
+                    sleep(500);
+                    robot.Ring_gate.setPosition(.8);
+                    sleep(500);
+
+                    robot.Ring_gate.setPosition(.55);
+                    sleep(500);
+                    robot.Ring_gate.setPosition(.8);
+                    sleep(500);
+
+                    robot.Ring_gate.setPosition(.55);
+                    sleep(500);
+                    robot.Ring_gate.setPosition(.8);
+
+                }
+
 
             //telemetry.addData("horizontal encoder", robot.BackLeft.getCurrentPosition());
             //telemetry.update();
@@ -275,7 +302,7 @@ public class TeleopOneP extends LinearOpMode {
         }
 
     }
-
+}
     //public void setDriveMotorPower() {
 
         /*
@@ -298,7 +325,7 @@ public class TeleopOneP extends LinearOpMode {
 
 
 
-    }
+
 
 
 
