@@ -1,15 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.robot.Robot;
-import com.qualcomm.robotcore.util.Hardware;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.HardwareMap.LegitbotV1;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
 @TeleOp(name = "ASMyTeleop")
@@ -18,12 +17,17 @@ public class TeleopV1 extends LinearOpMode {
 
     LegitbotV1 robot = new LegitbotV1();
 
+
+
+
     double sensitivity = 1;
 
 
 
     @Override
     public void runOpMode() throws InterruptedException {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         robot.init(hardwareMap);
@@ -32,7 +36,7 @@ public class TeleopV1 extends LinearOpMode {
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-
+/*
         robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -42,6 +46,8 @@ public class TeleopV1 extends LinearOpMode {
         robot.FrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.BackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.BackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+ */
 
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -62,6 +68,51 @@ public class TeleopV1 extends LinearOpMode {
 
 
         while (opModeIsActive()) {
+
+            //auto aim:
+            drive.update();
+
+            // Retrieve your pose
+            Pose2d myPose = drive.getPoseEstimate();
+
+            if (gamepad1.b) {
+                drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+            }
+
+            if (gamepad1.a) {
+                robot.WheelOutake.setPower(shooterspeed);
+
+                robot.Intake.setPower(-1);
+                robot.Pulley.setPower(-1);
+
+                drive.setMotorPowers(0, 0, 0, 0);
+                Trajectory myTrajectory = drive.trajectoryBuilder(myPose)
+                        .lineToLinearHeading(new Pose2d(-54, 0, Math.toRadians(90)))
+                        .build();
+
+                drive.followTrajectory(myTrajectory);
+
+                while (opModeIsActive()) {
+                    if (gamepad1.a) {
+                        break;
+                    }
+                }
+
+                robot.Ring_gate.setPosition(.55);
+                sleep(500);
+                robot.Ring_gate.setPosition(.8);
+                sleep(500);
+
+                robot.Ring_gate.setPosition(.55);
+                sleep(500);
+                robot.Ring_gate.setPosition(.8);
+                sleep(500);
+
+                robot.Ring_gate.setPosition(.55);
+                sleep(500);
+                robot.Ring_gate.setPosition(.8);
+
+            }
 
             // Code for the four drive motors
             /*
@@ -93,7 +144,13 @@ public class TeleopV1 extends LinearOpMode {
             robot.BackRight.setPower(sensitivity * BR);
             robot.BackLeft.setPower(sensitivity * BL);
             */
-            setDriveMotorPower();
+            drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad1.left_stick_y,
+                        -gamepad1.left_stick_x,
+                        -gamepad1.right_stick_x
+                )
+        );
 
             telemetry.addData("2: left bumper", gamepad2.left_bumper);
             telemetry.update();
@@ -182,7 +239,13 @@ public class TeleopV1 extends LinearOpMode {
                     robot.Wgoalarm.setPower(1);
                 }
                 while(robot.Wgoalarm.isBusy()&&opModeIsActive()){
-                    setDriveMotorPower();
+                    drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad1.left_stick_y,
+                        -gamepad1.left_stick_x,
+                        -gamepad1.right_stick_x
+                )
+        );
                     if (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.a || gamepad2.b){
                         break;
                     }
@@ -207,7 +270,13 @@ public class TeleopV1 extends LinearOpMode {
                 }
 
                 while(robot.Wgoalarm.isBusy() && opModeIsActive()){
-                    setDriveMotorPower();
+                    drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad1.left_stick_y,
+                        -gamepad1.left_stick_x,
+                        -gamepad1.right_stick_x
+                )
+        );
                     if (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.a || gamepad2.b){
                         break;
                     }
@@ -226,7 +295,13 @@ public class TeleopV1 extends LinearOpMode {
                     robot.Wgoalarm.setPower(.75);
                 }
                 while(robot.Wgoalarm.isBusy()&&opModeIsActive()){
-                    setDriveMotorPower();
+                    drive.setWeightedDrivePower(
+                new Pose2d(
+                        -gamepad1.left_stick_y,
+                        -gamepad1.left_stick_x,
+                        -gamepad1.right_stick_x
+                )
+        );
                     if (gamepad2.dpad_up || gamepad2.dpad_down || gamepad2.a || gamepad2.b){
                         break;
                     }
@@ -253,7 +328,9 @@ public class TeleopV1 extends LinearOpMode {
         }
 
     }
+    /*
     public void setDriveMotorPower(){
+
         float drive = -gamepad1.right_stick_x;
         float strafe = gamepad1.left_stick_x;
         float turn = gamepad1.left_stick_y;
@@ -267,5 +344,9 @@ public class TeleopV1 extends LinearOpMode {
         robot.FrontLeft.setPower(sensitivity * FL );
         robot.BackRight.setPower(sensitivity * BR);
         robot.BackLeft.setPower(sensitivity * BL);
+
+
     }
+
+     */
 }
