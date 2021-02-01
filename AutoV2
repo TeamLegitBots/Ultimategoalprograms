@@ -50,12 +50,10 @@ public class AutoV2 extends LinearOpMode {
         pipeline = new SkystoneDeterminationPipeline();
         phoneCam.setPipeline(pipeline);
 
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
+        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened()
-            {
-                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+            public void onOpened() {
+                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
             }
         });
 
@@ -76,14 +74,39 @@ public class AutoV2 extends LinearOpMode {
         telemetry.addData("Position", position);
         telemetry.update();
 
-        Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(0,0))
-                .splineTo(new Vector2d(63,-12.5),0)
+        Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(0, 0))
+                .splineTo(new Vector2d(63, -20), 0)
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToConstantHeading(new Vector2d(6,6))
+                .lineToConstantHeading(new Vector2d(69, 2))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .splineTo(new Vector2d(-64,-42),0)
+                .strafeTo(new Vector2d(69, -7))
+                .build();
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
+                .lineToLinearHeading(new Pose2d(19, -11, Math.toRadians(180)))
+                .build();
+        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
+                .strafeTo(new Vector2d(19, -17))
+                .build();
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
+                .lineToLinearHeading(new Pose2d(75, -5, Math.toRadians(0)))
+                .build();
+        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
+                .strafeTo(new Vector2d(75, -19))
+                .build();
+
+        Trajectory one_traj1 = drive.trajectoryBuilder(new Pose2d(0, 0))
+                .forward(63)
+                .build();
+        Trajectory one_traj2 = drive.trajectoryBuilder(one_traj1.end())
+                .strafeTo(new Vector2d(63, -20))
+                .build();
+        Trajectory one_traj3 = drive.trajectoryBuilder(one_traj2.end(),true)
+                .splineTo(new Vector2d(53,-14), Math.toRadians(-220))
+                .build();
+        Trajectory one_traj4 = drive.trajectoryBuilder(one_traj3.end())
+                .splineTo(new Vector2d(63, -20), Math.toRadians(0))
                 .build();
 
 
@@ -107,7 +130,7 @@ public class AutoV2 extends LinearOpMode {
 
         robot.Wgoalarm.setTargetPosition(robot.Wgoalarm.getCurrentPosition() + 450);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while(robot.Wgoalarm.isBusy()&&opModeIsActive()) {
+        while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
             robot.Wgoalarm.setPower(1);
         }
         robot.Wgoalarm.setPower(0);
@@ -118,7 +141,7 @@ public class AutoV2 extends LinearOpMode {
 
         sleep(2000);
 
-        if(position == SkystoneDeterminationPipeline.RingPosition.FOUR || position == SkystoneDeterminationPipeline.RingPosition.NONE) {
+        if (position == SkystoneDeterminationPipeline.RingPosition.NONE) {
             drive.followTrajectory(traj1);
 
             robot.Ring_gate.setPosition(.55);
@@ -135,13 +158,88 @@ public class AutoV2 extends LinearOpMode {
             sleep(500);
             robot.Ring_gate.setPosition(.8);
 
+            robot.WheelOutake.setPower(0);
+
             drive.followTrajectory(traj2);
 
             robot.Wgoalservo.setPosition(1);
             sleep(1000);
 
+            drive.followTrajectory(traj3);
+
+            drive.followTrajectory(traj4);
+
+            drive.followTrajectory(traj5);
+
+            robot.Wgoalservo.setPosition(0);
+            sleep(2000);
+
+            drive.followTrajectory(traj6);
+
+            robot.Backservo.setPosition(.75);
+            robot.Wgoalservo.setPosition(1);
+            sleep(1000);
+
+            drive.followTrajectory(traj7);
         }
 
+        if (position == SkystoneDeterminationPipeline.RingPosition.ONE) {
+            drive.followTrajectory(one_traj1);
+            drive.followTrajectory(one_traj2);
+
+            robot.Backservo.setPosition(.75);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+            sleep(500);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+            sleep(500);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+
+            robot.Intake.setPower(-1);
+            robot.Pulley.setPower(-1);
+
+            drive.followTrajectory(one_traj3);
+            sleep(2000);
+            drive.followTrajectory(one_traj4);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+
+            robot.WheelOutake.setPower(0);
+
+            drive.followTrajectory(traj2);
+
+            robot.Wgoalservo.setPosition(1);
+            sleep(1000);
+
+            drive.followTrajectory(traj3);
+
+            drive.followTrajectory(traj4);
+
+            drive.followTrajectory(traj5);
+
+            robot.Wgoalservo.setPosition(0);
+            sleep(2000);
+
+            drive.followTrajectory(traj6);
+
+            robot.Wgoalservo.setPosition(1);
+            sleep(1000);
+
+            drive.followTrajectory(traj7);
+
+
+
+        }
 
     }
     //@Override
