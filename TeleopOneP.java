@@ -78,30 +78,36 @@ public class TeleopOneP extends LinearOpMode {
 
                 drive.setMotorPowers(0, 0, 0, 0);
                 Trajectory myTrajectory = drive.trajectoryBuilder(myPose)
-                        .lineToLinearHeading(new Pose2d(-54, 0, Math.toRadians(90)))
+                        .lineToLinearHeading(new Pose2d(-48, 0, Math.toRadians(90)))
                         .build();
 
                 drive.followTrajectory(myTrajectory);
 
                 while (opModeIsActive()) {
                     if (gamepad1.dpad_left) {
+                        robot.Ring_gate.setPosition(.55);
+                        sleep(500);
+                        robot.Ring_gate.setPosition(.8);
+                        sleep(500);
+
+                        robot.Ring_gate.setPosition(.55);
+                        sleep(500);
+                        robot.Ring_gate.setPosition(.8);
+                        sleep(500);
+
+                        robot.Ring_gate.setPosition(.55);
+                        sleep(500);
+                        robot.Ring_gate.setPosition(.8);
+
+                        break;
+                    }
+
+                    if(gamepad1.start){
                         break;
                     }
                 }
 
-                    robot.Ring_gate.setPosition(.55);
-                    sleep(500);
-                    robot.Ring_gate.setPosition(.8);
-                    sleep(500);
 
-                    robot.Ring_gate.setPosition(.55);
-                    sleep(500);
-                    robot.Ring_gate.setPosition(.8);
-                    sleep(500);
-
-                    robot.Ring_gate.setPosition(.55);
-                    sleep(500);
-                    robot.Ring_gate.setPosition(.8);
 
                 }
 
