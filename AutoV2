@@ -74,6 +74,7 @@ public class AutoV2 extends LinearOpMode {
         telemetry.addData("Position", position);
         telemetry.update();
 
+//no ring trajectories
         Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(0, 0))
                 .splineTo(new Vector2d(63, -20), 0)
                 .build();
@@ -84,10 +85,10 @@ public class AutoV2 extends LinearOpMode {
                 .strafeTo(new Vector2d(69, -7))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToLinearHeading(new Pose2d(19, -11, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(20, -11, Math.toRadians(180)))
                 .build();
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .strafeTo(new Vector2d(19, -17))
+                .strafeTo(new Vector2d(20, -17))
                 .build();
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
                 .lineToLinearHeading(new Pose2d(75, -5, Math.toRadians(0)))
@@ -96,6 +97,8 @@ public class AutoV2 extends LinearOpMode {
                 .strafeTo(new Vector2d(75, -19))
                 .build();
 
+
+//one ring trajectories
         Trajectory one_traj1 = drive.trajectoryBuilder(new Pose2d(0, 0))
                 .forward(63)
                 .build();
@@ -107,6 +110,26 @@ public class AutoV2 extends LinearOpMode {
                 .build();
         Trajectory one_traj4 = drive.trajectoryBuilder(one_traj3.end())
                 .splineTo(new Vector2d(63, -20), Math.toRadians(0))
+                .build();
+        Trajectory one_traj5 = drive.trajectoryBuilder(one_traj4.end())
+                .lineToConstantHeading(new Vector2d(93, -22))
+                .build();
+        Trajectory one_traj6 = drive.trajectoryBuilder(one_traj5.end())
+                .strafeRight(6)
+                .build();
+        Trajectory one_traj7 = drive.trajectoryBuilder(one_traj6.end())
+                .lineToLinearHeading(new Pose2d(28, -32, Math.toRadians(90)))
+                .build();
+        /*Trajectory one_traj8 = drive.trajectoryBuilder(one_traj7.end())
+                .strafeTo(new Vector2d(20, -17))
+                .build();
+
+         */
+        Trajectory one_traj9 = drive.trajectoryBuilder(one_traj7.end())
+                .lineToLinearHeading(new Pose2d(99, -29, Math.toRadians(0)))
+                .build();
+        Trajectory one_traj10 = drive.trajectoryBuilder(one_traj9.end())
+                .lineToConstantHeading(new Vector2d(75,-35))
                 .build();
 
 
@@ -215,27 +238,29 @@ public class AutoV2 extends LinearOpMode {
             robot.Ring_gate.setPosition(.8);
 
             robot.WheelOutake.setPower(0);
+            robot.Intake.setPower(0);
+            robot.Pulley.setPower(0);
 
-            drive.followTrajectory(traj2);
+            drive.followTrajectory(one_traj5);
 
             robot.Wgoalservo.setPosition(1);
-            sleep(1000);
+            sleep(500);
 
-            drive.followTrajectory(traj3);
-
-            drive.followTrajectory(traj4);
-
-            drive.followTrajectory(traj5);
+            drive.followTrajectory(one_traj6);
+            drive.followTrajectory(one_traj7);
+            //drive.followTrajectory(one_traj8);
 
             robot.Wgoalservo.setPosition(0);
-            sleep(2000);
-
-            drive.followTrajectory(traj6);
-
-            robot.Wgoalservo.setPosition(1);
             sleep(1000);
 
-            drive.followTrajectory(traj7);
+            drive.followTrajectory(one_traj9);
+
+            robot.Wgoalservo.setPosition(1);
+            sleep(500);
+
+            drive.followTrajectory(one_traj10);
+
+
 
 
 
@@ -276,9 +301,9 @@ public class AutoV2 extends LinearOpMode {
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(45,150);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(45,160);
 
-        static final int REGION_WIDTH = 10;
+        static final int REGION_WIDTH = 2;
         static final int REGION_HEIGHT = 40;
 
         final int FOUR_RING_THRESHOLD = 147;
