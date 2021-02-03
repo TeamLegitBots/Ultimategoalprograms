@@ -109,7 +109,7 @@ public class AutoV2 extends LinearOpMode {
                 .splineTo(new Vector2d(53,-14), Math.toRadians(-220))
                 .build();
         Trajectory one_traj4 = drive.trajectoryBuilder(one_traj3.end())
-                .splineTo(new Vector2d(63, -20), Math.toRadians(0))
+                .splineTo(new Vector2d(63, -15), Math.toRadians(0))
                 .build();
         Trajectory one_traj5 = drive.trajectoryBuilder(one_traj4.end())
                 .lineToConstantHeading(new Vector2d(93, -22))
@@ -118,7 +118,7 @@ public class AutoV2 extends LinearOpMode {
                 .strafeRight(6)
                 .build();
         Trajectory one_traj7 = drive.trajectoryBuilder(one_traj6.end())
-                .lineToLinearHeading(new Pose2d(28, -32, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(28, -34.5, Math.toRadians(90)))
                 .build();
         /*Trajectory one_traj8 = drive.trajectoryBuilder(one_traj7.end())
                 .strafeTo(new Vector2d(20, -17))
@@ -126,10 +126,10 @@ public class AutoV2 extends LinearOpMode {
 
          */
         Trajectory one_traj9 = drive.trajectoryBuilder(one_traj7.end())
-                .lineToLinearHeading(new Pose2d(99, -29, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(99, -30, Math.toRadians(0)))
                 .build();
         Trajectory one_traj10 = drive.trajectoryBuilder(one_traj9.end())
-                .lineToConstantHeading(new Vector2d(75,-35))
+                .lineToConstantHeading(new Vector2d(75,-50))
                 .build();
 
 
@@ -226,11 +226,15 @@ public class AutoV2 extends LinearOpMode {
             sleep(500);
             robot.Ring_gate.setPosition(.8);
 
+            robot.WheelOutake.setPower(0);
+
             robot.Intake.setPower(-1);
             robot.Pulley.setPower(-1);
 
             drive.followTrajectory(one_traj3);
-            sleep(2000);
+            sleep(1000);
+            robot.WheelOutake.setPower(1);
+            sleep(1000);
             drive.followTrajectory(one_traj4);
 
             robot.Ring_gate.setPosition(.55);
