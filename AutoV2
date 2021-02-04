@@ -132,14 +132,17 @@ public class AutoV2 extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(75,-50))
                 .build();
 
-        Trajectory four_traj1 = drive.trajectoryBuilder(one_traj3.end())
-                .splineTo(new Vector2d(53,-25),Math.toRadians(-220))
+        Trajectory four_traj1 = drive.trajectoryBuilder(one_traj3.end(),true)
+                .splineTo(new Vector2d(30,0),Math.toRadians(-220))
                 .build();
         Trajectory four_traj2 = drive.trajectoryBuilder((four_traj1.end()))
                 .splineTo(new Vector2d(63,-15),Math.toRadians(0))
                 .build();
         Trajectory four_traj3 = drive.trajectoryBuilder(four_traj2.end())
-                .lineToConstantHeading(new Vector2d(93, -22))
+                .lineToConstantHeading(new Vector2d(117, 0))
+                .build();
+        Trajectory four_traj4 = drive.trajectoryBuilder(four_traj3.end())
+                .lineToConstantHeading(new Vector2d(87, -22))
                 .build();
 
 
@@ -309,7 +312,8 @@ public class AutoV2 extends LinearOpMode {
             sleep(1000);
             robot.WheelOutake.setPower(1);
             sleep(1000);
-            drive.followTrajectory(four_traj1);
+            drive.followTrajectory(one_traj4);
+
             robot.Ring_gate.setPosition(.55);
             sleep(500);
             robot.Ring_gate.setPosition(.8);
@@ -317,7 +321,21 @@ public class AutoV2 extends LinearOpMode {
             robot.WheelOutake.setPower(0);
 
             drive.followTrajectory(four_traj1);
+            sleep(1000);
+            robot.WheelOutake.setPower(1);
+            sleep(1000);
             drive.followTrajectory(four_traj2);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+            sleep(500);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+            sleep(500);
+
             robot.Ring_gate.setPosition(.55);
             sleep(500);
             robot.Ring_gate.setPosition(.8);
@@ -325,9 +343,11 @@ public class AutoV2 extends LinearOpMode {
             robot.WheelOutake.setPower(0);
             robot.Intake.setPower(0);
             robot.Pulley.setPower(0);
+
             drive.followTrajectory(four_traj3);
             robot.Wgoalservo.setPosition(1);
             sleep(500);
+            drive.followTrajectory(four_traj4);
         }
     }
 
@@ -448,6 +468,3 @@ public class AutoV2 extends LinearOpMode {
         }
     }
 }
-
-
-
