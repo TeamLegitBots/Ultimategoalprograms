@@ -141,13 +141,19 @@ public class AutoV2 extends LinearOpMode {
 
 
         //four ring trajectories
+        Trajectory four_traj_1 = drive.trajectoryBuilder(new Pose2d(0, 0))
+                .forward(65)
+                .build();
+        Trajectory four_traj_2 = drive.trajectoryBuilder(four_traj_1.end())
+                .strafeTo(new Vector2d(65, -20))
+                .build();
 
-        Trajectory four_traj_3 = drive.trajectoryBuilder(one_traj2.end(),true)
-                .strafeTo(new Vector2d(63,-14))
+        Trajectory four_traj_3 = drive.trajectoryBuilder(four_traj_2.end(),true)
+                .strafeTo(new Vector2d(65,-14))
                 .build();
 
         Trajectory four_traj_4 = drive.trajectoryBuilder(four_traj_3.end())
-                .back(5,
+                .back(7,
                         new MinVelocityConstraint(
                                 Arrays.asList(
                                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
@@ -159,11 +165,11 @@ public class AutoV2 extends LinearOpMode {
                 .build();
 
         Trajectory four_traj_5 = drive.trajectoryBuilder(four_traj_4.end())
-                .lineToConstantHeading(new Vector2d(63, -20))
+                .lineToConstantHeading(new Vector2d(65, -20))
                 .build();
 
         Trajectory four_traj0 = drive.trajectoryBuilder(four_traj_5.end())
-                .strafeTo(new Vector2d(63,-14))
+                .strafeTo(new Vector2d(65,-14))
                 .build();
 
         Trajectory four_traj1 = drive.trajectoryBuilder(four_traj0.end())
@@ -179,7 +185,7 @@ public class AutoV2 extends LinearOpMode {
 
                 .build();
         Trajectory four_traj2 = drive.trajectoryBuilder((four_traj1.end()))
-                .lineToConstantHeading(new Vector2d(63,-20))
+                .lineToConstantHeading(new Vector2d(65,-20))
                 .build();
         Trajectory four_traj3 = drive.trajectoryBuilder(four_traj2.end())
                 .lineToConstantHeading(new Vector2d(117, 0))
@@ -327,8 +333,8 @@ public class AutoV2 extends LinearOpMode {
 
         }
         if (position == SkystoneDeterminationPipeline.RingPosition.FOUR) {
-            drive.followTrajectory(one_traj1);
-            drive.followTrajectory(one_traj2);//Drives to optimal shooting range
+            drive.followTrajectory(four_traj_1);
+            drive.followTrajectory(four_traj_2);//Drives to optimal shooting range
 
             robot.Backservo.setPosition(.75);
 
