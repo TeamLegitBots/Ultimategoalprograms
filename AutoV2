@@ -132,6 +132,17 @@ public class AutoV2 extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(75,-50))
                 .build();
 
+        Trajectory four_traj1 = drive.trajectoryBuilder(one_traj3.end())
+                .splineTo(new Vector2d(53,-25),Math.toRadians(-220))
+                .build();
+        Trajectory four_traj2 = drive.trajectoryBuilder((four_traj1.end()))
+                .splineTo(new Vector2d(63,-15),Math.toRadians(0))
+                .build();
+        Trajectory four_traj3 = drive.trajectoryBuilder(four_traj2.end())
+                .lineToConstantHeading(new Vector2d(93, -22))
+                .build();
+
+
 
         waitForStart();
         drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
@@ -269,8 +280,57 @@ public class AutoV2 extends LinearOpMode {
 
 
         }
+        if (position == SkystoneDeterminationPipeline.RingPosition.FOUR) {
+            drive.followTrajectory(one_traj1);
+            drive.followTrajectory(one_traj2);//Drives to optimal shooting range
 
+            robot.Backservo.setPosition(.75);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+            sleep(500);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+            sleep(500);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+
+            robot.WheelOutake.setPower(0);
+
+            robot.Intake.setPower(-1);  //shoot rings
+            robot.Pulley.setPower(-1);
+
+            drive.followTrajectory(one_traj3); //splines to get one ring
+            sleep(1000);
+            robot.WheelOutake.setPower(1);
+            sleep(1000);
+            drive.followTrajectory(four_traj1);
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+
+            robot.WheelOutake.setPower(0);
+
+            drive.followTrajectory(four_traj1);
+            drive.followTrajectory(four_traj2);
+            robot.Ring_gate.setPosition(.55);
+            sleep(500);
+            robot.Ring_gate.setPosition(.8);
+
+            robot.WheelOutake.setPower(0);
+            robot.Intake.setPower(0);
+            robot.Pulley.setPower(0);
+            drive.followTrajectory(four_traj3);
+            robot.Wgoalservo.setPosition(1);
+            sleep(500);
+        }
     }
+
     //@Override
     public void startIntake(int speed, int time) {
         robot.Intake.setPower(speed);
