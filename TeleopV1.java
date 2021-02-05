@@ -1,14 +1,22 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.HardwareMap.LegitbotV1;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
+import java.util.Arrays;
 
 
 @TeleOp(name = "ASMyTeleop")
@@ -70,8 +78,7 @@ public class TeleopV1 extends LinearOpMode {
         while (opModeIsActive()) {
 
             //auto aim:
-            drive.update();
-
+/*
             // Retrieve your pose
             Pose2d myPose = drive.getPoseEstimate();
 
@@ -117,7 +124,77 @@ public class TeleopV1 extends LinearOpMode {
                 }
 
 
+
+
             }
+            */
+
+            drive.update();
+
+            if (gamepad1.x) {
+                drive.setMotorPowers(0,0,0,0);
+                robot.WheelOutake.setPower(powershotspeed);
+
+                drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+                Pose2d myPose = drive.getPoseEstimate();
+
+
+                Trajectory powershot1 = drive.trajectoryBuilder(myPose)
+                    .strafeTo(new Vector2d(0,23),
+                            new MinVelocityConstraint(
+                                    Arrays.asList(
+                                            new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                            new MecanumVelocityConstraint(15, DriveConstants.TRACK_WIDTH)
+                                    )
+                            ),
+                            new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                    )
+                        .build();
+                Trajectory powershot2 = drive.trajectoryBuilder(powershot1.end())
+                        .strafeTo(new Vector2d(0,29),
+                                new MinVelocityConstraint(
+                                        Arrays.asList(
+                                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                                new MecanumVelocityConstraint(15, DriveConstants.TRACK_WIDTH)
+                                        )
+                                ),
+                                new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                        )
+                        .build();
+                Trajectory powershot3 = drive.trajectoryBuilder(powershot2.end())
+                        .strafeTo(new Vector2d(0,35.5),
+                                new MinVelocityConstraint(
+                                        Arrays.asList(
+                                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                                new MecanumVelocityConstraint(15, DriveConstants.TRACK_WIDTH)
+                                        )
+                                ),
+                                new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)
+                        )
+                        .build();
+
+                drive.followTrajectory(powershot1);
+                robot.Ring_gate.setPosition(.55);
+                sleep(500);
+                robot.Ring_gate.setPosition(.8);
+
+                drive.followTrajectory(powershot2);
+                robot.Ring_gate.setPosition(.55);
+                sleep(500);
+                robot.Ring_gate.setPosition(.8);
+
+                drive.followTrajectory(powershot3);
+                robot.Ring_gate.setPosition(.55);
+                sleep(500);
+                robot.Ring_gate.setPosition(.8);
+
+
+
+
+
+
+            }
+
 
             // Code for the four drive motors
             /*
