@@ -44,9 +44,9 @@ public class TeleopOneP extends LinearOpMode {
 
         int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
 
-        int WA_pos_1 = original_WA_pos - 450;
+        int WA_pos_1 = original_WA_pos - 800;
         int WA_pos_2 = original_WA_pos;
-        int WA_pos_3 = original_WA_pos + 1500 - 450;
+        int WA_pos_3 = original_WA_pos + 2000;
 
         double wobble_goal_arm_pos = 1;
         double WAerror = 0;
@@ -134,7 +134,7 @@ public class TeleopOneP extends LinearOpMode {
             float FL = -drive - turn  + strafe;
             float BR = drive - turn + strafe;
             float BL = -drive  - turn - strafe;
-            
+
             */
 
 
@@ -173,8 +173,8 @@ public class TeleopOneP extends LinearOpMode {
                 robot.Ring_gate.setPosition(0);
 
             }
-        
-            
+
+
             */
 
             //manual ringgate
@@ -211,8 +211,8 @@ public class TeleopOneP extends LinearOpMode {
 
             }
 
-         
-            
+
+
 */
 
 
@@ -320,7 +320,7 @@ public class TeleopOneP extends LinearOpMode {
             float FL = -drive - turn  + strafe;
             float BR = drive - turn + strafe;
             float BL = -drive  - turn - strafe;
-            
+
             robot.FrontRight.setPower(sensitivity * FR);
             robot.FrontLeft.setPower(sensitivity * FL );
             robot.BackRight.setPower(sensitivity * BR);
@@ -335,5 +335,5 @@ public class TeleopOneP extends LinearOpMode {
 
 
 
-    
+
 
