@@ -203,18 +203,14 @@ public class AutoV2 extends LinearOpMode {
         //code goes here
         runtime.reset();
 
-        while (runtime.time() < 1 && opModeIsActive()) {
             position = pipeline.position;
 
             telemetry.addData("Analysis", pipeline.getAnalysis());
             telemetry.addData("Position", position);
             telemetry.update();
 
-            sleep(50);
-        }
 
-
-        robot.Wgoalarm.setTargetPosition(robot.Wgoalarm.getCurrentPosition() + 450);
+        robot.Wgoalarm.setTargetPosition(robot.Wgoalarm.getCurrentPosition() + 800);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
             robot.Wgoalarm.setPower(1);
