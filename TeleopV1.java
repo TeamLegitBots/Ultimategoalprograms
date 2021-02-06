@@ -28,7 +28,7 @@ public class TeleopV1 extends LinearOpMode {
 
 
 
-    double sensitivity = 1;
+    //double sensitivity = 1;
 
 
 
@@ -61,12 +61,13 @@ public class TeleopV1 extends LinearOpMode {
 
         int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
 
-        int WA_pos_1 = original_WA_pos - 1000;
+        /*int WA_pos_1 = original_WA_pos - 1000;
         int WA_pos_2 = original_WA_pos;
         int WA_pos_3 = original_WA_pos + 2000;
 
         double wobble_goal_arm_pos = 2;
         double WAerror=0;
+         */
         int WAservo_pos =0;
         double shooterspeed = 1;
         double powershotspeed = .87;
@@ -263,7 +264,7 @@ public class TeleopV1 extends LinearOpMode {
             }
 
             //move wobble goal arm servo
-            if (gamepad2.a  && wobble_goal_arm_pos !=1){
+            if (gamepad2.a){
                 robot.Wgoalservo.setPosition(0);
             }
             if (gamepad2.b){
@@ -297,7 +298,15 @@ public class TeleopV1 extends LinearOpMode {
 
 
             //wobble goal arm
+            if(gamepad2.dpad_up){
+                robot.Wgoalarm.setPower(1);
+            } else if (gamepad2.dpad_down){
+                robot.Wgoalarm.setPower(-1);
+            } else{
+                robot.Wgoalarm.setPower(0);
+            }
 
+/*
             if(gamepad2.dpad_up && wobble_goal_arm_pos<3){
                 wobble_goal_arm_pos = wobble_goal_arm_pos+1;
                 //sleep(500);
@@ -391,8 +400,10 @@ public class TeleopV1 extends LinearOpMode {
                 robot.Wgoalarm.setPower(0);
                 robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-
+*/
             //sensitivity
+
+            /*
             if(gamepad1.dpad_up && sensitivity<1){
                 while(gamepad1.dpad_up){}
                 sensitivity = sensitivity + .1;
@@ -405,7 +416,7 @@ public class TeleopV1 extends LinearOpMode {
             }
             telemetry.addData("sensitivity now: ", sensitivity);
             telemetry.update();
-
+*/
 
         }
 
