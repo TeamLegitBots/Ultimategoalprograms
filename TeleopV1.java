@@ -61,11 +61,11 @@ public class TeleopV1 extends LinearOpMode {
 
         int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
 
-        int WA_pos_1 = original_WA_pos - 800;
+        int WA_pos_1 = original_WA_pos - 1000;
         int WA_pos_2 = original_WA_pos;
         int WA_pos_3 = original_WA_pos + 2000;
 
-        double wobble_goal_arm_pos = 1;
+        double wobble_goal_arm_pos = 2;
         double WAerror=0;
         int WAservo_pos =0;
         double shooterspeed = 1;
@@ -300,11 +300,11 @@ public class TeleopV1 extends LinearOpMode {
 
             if(gamepad2.dpad_up && wobble_goal_arm_pos<3){
                 wobble_goal_arm_pos = wobble_goal_arm_pos+1;
-                sleep(500);
+                //sleep(500);
             }
             if(gamepad2.dpad_down && wobble_goal_arm_pos>1){
                 wobble_goal_arm_pos = wobble_goal_arm_pos-1;
-                sleep(500);
+                //sleep(500);
 
             }
             //telemetry.addData("target position",wobble_goal_arm_pos);
