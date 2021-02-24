@@ -141,7 +141,7 @@ public class TeleopV1 extends LinearOpMode {
 
 
                 Trajectory powershot1 = drive.trajectoryBuilder(myPose)
-                    .strafeTo(new Vector2d(0,23),
+                    .strafeTo(new Vector2d(0,19),
                             new MinVelocityConstraint(
                                     Arrays.asList(
                                             new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
