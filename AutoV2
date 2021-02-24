@@ -83,7 +83,7 @@ public class AutoV2 extends LinearOpMode {
 
 //no ring trajectories
         Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(0, 0))
-                .splineTo(new Vector2d(63, -20), 0)
+                .splineTo(new Vector2d(63, -17), 0)
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
                 .lineToConstantHeading(new Vector2d(69, 2))
@@ -95,7 +95,7 @@ public class AutoV2 extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(20, -11, Math.toRadians(180)))
                 .build();
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .strafeTo(new Vector2d(20, -20))
+                .strafeTo(new Vector2d(20, -17))
                 .build();
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
                 .lineToLinearHeading(new Pose2d(75, 0 , Math.toRadians(0)))
@@ -110,13 +110,13 @@ public class AutoV2 extends LinearOpMode {
                 .forward(63)
                 .build();
         Trajectory one_traj2 = drive.trajectoryBuilder(one_traj1.end())
-                .strafeTo(new Vector2d(63, -20))
+                .strafeTo(new Vector2d(63, -17))
                 .build();
         Trajectory one_traj3 = drive.trajectoryBuilder(one_traj2.end(),true)
                 .splineTo(new Vector2d(53,-14), Math.toRadians(-220))
                 .build();
         Trajectory one_traj4 = drive.trajectoryBuilder(one_traj3.end())
-                .splineTo(new Vector2d(63, -20), Math.toRadians(0))
+                .splineTo(new Vector2d(63, -17), Math.toRadians(0))
                 .build();
         Trajectory one_traj5 = drive.trajectoryBuilder(one_traj4.end())
                 .lineToConstantHeading(new Vector2d(93, -22))
@@ -145,7 +145,7 @@ public class AutoV2 extends LinearOpMode {
                 .forward(65)
                 .build();
         Trajectory four_traj_2 = drive.trajectoryBuilder(four_traj_1.end())
-                .strafeTo(new Vector2d(65, -20))
+                .strafeTo(new Vector2d(65, -17))
                 .build();
 
         Trajectory four_traj_3 = drive.trajectoryBuilder(four_traj_2.end(),true)
@@ -165,7 +165,7 @@ public class AutoV2 extends LinearOpMode {
                 .build();
 
         Trajectory four_traj_5 = drive.trajectoryBuilder(four_traj_4.end())
-                .lineToConstantHeading(new Vector2d(65, -20))
+                .lineToConstantHeading(new Vector2d(65, -17))
                 .build();
 
         Trajectory four_traj0 = drive.trajectoryBuilder(four_traj_5.end())
@@ -185,7 +185,7 @@ public class AutoV2 extends LinearOpMode {
 
                 .build();
         Trajectory four_traj2 = drive.trajectoryBuilder((four_traj1.end()))
-                .lineToConstantHeading(new Vector2d(65,-20))
+                .lineToConstantHeading(new Vector2d(65,-17))
                 .build();
         Trajectory four_traj3 = drive.trajectoryBuilder(four_traj2.end())
                 .lineToConstantHeading(new Vector2d(117, 0))
@@ -263,6 +263,7 @@ public class AutoV2 extends LinearOpMode {
             sleep(1000);
 
             drive.followTrajectory(traj7);
+            drive.turn(Math.toRadians(180));
         }
 
         if (position == SkystoneDeterminationPipeline.RingPosition.ONE) {
