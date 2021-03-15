@@ -89,7 +89,7 @@ public class TeleopOnePV2 extends LinearOpMode {
                 if (gamepad1.x) {
                     robot.Ring_gate.setPosition(.55);
                 } else {
-                    robot.Ring_gate.setPosition(.75);
+                    robot.Ring_gate.setPosition(.8);
                 }
 
             }
