@@ -30,8 +30,8 @@ public class TeleopOnePV2 extends LinearOpMode {
         telemetry.addData("right bumper1", gamepad1.right_bumper);
         telemetry.update();
 
-        robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         /*
         robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -41,8 +41,6 @@ public class TeleopOnePV2 extends LinearOpMode {
 
 */
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        int original_WA_pos = robot.Wgoalarm.getCurrentPosition();
 
         double shooterspeed = 1;
         double powershotspeed = .87;
@@ -68,6 +66,20 @@ public class TeleopOnePV2 extends LinearOpMode {
                     robot.Pulley.setPower(0);
                 }
 
+                if (gamepad1.a) {
+                    robot.Wgoalservo.setPosition(0);
+                };
+                if (gamepad1.b) {
+                robot.Wgoalservo.setPosition(1);
+                };
+
+                if(gamepad1.dpad_up) {
+                    robot.Wgoalarm.setPower(1);
+                } else if(gamepad1.dpad_down){
+                    robot.Wgoalarm.setPower(-1);
+                } else{
+                    robot.Wgoalarm.setPower(0);
+                }
 
                 drive.setWeightedDrivePower(
                         new Pose2d(
