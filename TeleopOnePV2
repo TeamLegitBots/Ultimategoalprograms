@@ -45,7 +45,7 @@ public class TeleopOnePV2 extends LinearOpMode {
 */
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        double shooterspeed = 1;
+        double shooterspeed = .95;
         double powershotspeed = .87;
         long sleep_time = 400;
 
@@ -97,7 +97,7 @@ public class TeleopOnePV2 extends LinearOpMode {
                 Pose2d myPose = drive.getPoseEstimate();
 
                 Trajectory myTrajectory = drive.trajectoryBuilder(myPose)
-                        .lineToLinearHeading(new Pose2d(-5, 25, Math.toRadians(15)))
+                        .lineToLinearHeading(new Pose2d(-5, 15, Math.toRadians(20)))
                         .build();
 
                 drive.followTrajectory(myTrajectory);
