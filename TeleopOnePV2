@@ -33,6 +33,9 @@ public class TeleopOnePV2 extends LinearOpMode {
         robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        robot.Intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.Pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         /*
         robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -44,14 +47,19 @@ public class TeleopOnePV2 extends LinearOpMode {
 
         double shooterspeed = 1;
         double powershotspeed = .87;
+        long sleep_time = 400;
 
         waitForStart();
 
 
         while (opModeIsActive()) {
+            drive.update();
 
 
-                //telemetry.addData("horizontal encoder", robot.BackLeft.getCurrentPosition());
+
+
+
+            //telemetry.addData("horizontal encoder", robot.BackLeft.getCurrentPosition());
                 //telemetry.update();
 
 
@@ -72,6 +80,45 @@ public class TeleopOnePV2 extends LinearOpMode {
                 if (gamepad1.b) {
                 robot.Wgoalservo.setPosition(1);
                 };
+
+            if (gamepad1.start) {
+                drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+            }
+
+            if (gamepad1.y) {
+                robot.WheelOutake.setPower(shooterspeed);
+
+                robot.Intake.setPower(1);
+                robot.Pulley.setPower(-1);
+
+
+                drive.setMotorPowers(0, 0, 0, 0);
+
+                Pose2d myPose = drive.getPoseEstimate();
+
+                Trajectory myTrajectory = drive.trajectoryBuilder(myPose)
+                        .lineToLinearHeading(new Pose2d(-5, 25, Math.toRadians(15)))
+                        .build();
+
+                drive.followTrajectory(myTrajectory);
+
+                    robot.Ring_gate.setPosition(.55);
+                    sleep(sleep_time);
+                    robot.Ring_gate.setPosition(.8);
+                    sleep(sleep_time);
+
+                    robot.Ring_gate.setPosition(.55);
+                    sleep(sleep_time);
+                    robot.Ring_gate.setPosition(.8);
+                    sleep(sleep_time);
+
+                    robot.Ring_gate.setPosition(.55);
+                    sleep(sleep_time);
+                    robot.Ring_gate.setPosition(.8);
+
+
+
+                }
 
                 if(gamepad1.dpad_up) {
                     robot.Wgoalarm.setPower(1);
