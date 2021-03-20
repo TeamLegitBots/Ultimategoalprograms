@@ -2,10 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.HardwareMap.LegitbotV1;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -14,13 +19,37 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 //@Disabled
 public class TeleopOnePV2 extends LinearOpMode {
 
+    BNO055IMU imu;
     LegitbotV1 robot = new LegitbotV1();
 
+
     double sensitivity = 2;
+
+    double live_gyro_value = 0;
+    double gyro_offset = 0;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled      = false;
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        imu.initialize(parameters);
+
+        while (!isStopRequested() && !imu.isGyroCalibrated())
+        {
+            sleep(50);
+            idle();
+        }
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -48,6 +77,14 @@ public class TeleopOnePV2 extends LinearOpMode {
         double shooterspeed = .95;
         double powershotspeed = .8;
         long sleep_time = 200;
+
+        double targetHeading = 0;
+        double allowableError = 20;
+        double autoturnSpeed = 1;
+
+        double allowableError2 = 1;
+        double autoturnSpeed2 = 0.25;
+
 
         waitForStart();
 
@@ -81,8 +118,8 @@ public class TeleopOnePV2 extends LinearOpMode {
                 robot.Wgoalservo.setPosition(1);
                 };
 
-            if (gamepad1.start) {
-                drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+            if (gamepad1.back) {
+                gyro_offset = checkOrientation();
             }
 
             if (gamepad1.y) {
@@ -94,6 +131,30 @@ public class TeleopOnePV2 extends LinearOpMode {
 
                 drive.setMotorPowers(0, 0, 0, 0);
 
+                getHeading();
+
+
+
+                while (getHeading() < targetHeading - allowableError || getHeading() > targetHeading + allowableError) {
+                    if (getHeading()>targetHeading + allowableError){
+                        drive.setMotorPowers(autoturnSpeed, autoturnSpeed, -autoturnSpeed, -autoturnSpeed);
+                    }
+                    if (getHeading()<targetHeading - allowableError) {
+                        drive.setMotorPowers(-autoturnSpeed, -autoturnSpeed, autoturnSpeed, autoturnSpeed);
+                    }
+                    }
+
+                while (getHeading() < targetHeading - allowableError2 || getHeading() > targetHeading + allowableError2) {
+                    if (getHeading()>targetHeading + allowableError){
+                        drive.setMotorPowers(autoturnSpeed2, autoturnSpeed2, -autoturnSpeed2, -autoturnSpeed2);
+                    }
+                    if (getHeading()<targetHeading - allowableError) {
+                        drive.setMotorPowers(-autoturnSpeed2, -autoturnSpeed2, autoturnSpeed2, autoturnSpeed2);
+                    }
+                }
+                drive.setMotorPowers(0, 0, 0, 0);
+
+                /*
                 Pose2d myPose = drive.getPoseEstimate();
 
                 Trajectory myTrajectory = drive.trajectoryBuilder(myPose)
@@ -101,6 +162,11 @@ public class TeleopOnePV2 extends LinearOpMode {
                         .build();
 
                 drive.followTrajectory(myTrajectory);
+*/
+                    robot.Ring_gate.setPosition(.55);
+                    sleep(sleep_time);
+                    robot.Ring_gate.setPosition(.8);
+                    sleep(sleep_time);
 
                     robot.Ring_gate.setPosition(.55);
                     sleep(sleep_time);
@@ -153,6 +219,19 @@ public class TeleopOnePV2 extends LinearOpMode {
 
             }
         }
+    double getHeading( ) {
+// read the gyro
+        live_gyro_value =  checkOrientation();
+        return (live_gyro_value - gyro_offset);
+    }
+    double checkOrientation() {
+// read the orientation of the robot
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        imu.getPosition();
+// and save the heading
+        double curHeading = angles.firstAngle;
+        return curHeading;
+    }
     }
 
 
