@@ -1,76 +1,32 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.HardwareMap.LegitbotV1;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
-
 @TeleOp(name = "ASTeleopOnePV2")
 //@Disabled
 public class TeleopOnePV2 extends LinearOpMode {
-
-    BNO055IMU imu;
     LegitbotV1 robot = new LegitbotV1();
-
-
     double sensitivity = 2;
-
-    double live_gyro_value = 0;
-    double gyro_offset = 0;
-
-
     @Override
     public void runOpMode() throws InterruptedException {
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        imu.initialize(parameters);
-
-        while (!isStopRequested() && !imu.isGyroCalibrated())
-        {
-            sleep(50);
-            idle();
-        }
-
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
         robot.init(hardwareMap);
         telemetry.addData("right bumper1", gamepad1.right_bumper);
         telemetry.update();
-
         robot.WheelOutake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         robot.Intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.Pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         /*
         robot.FrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.FrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.BackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.BackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 */
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -78,162 +34,80 @@ public class TeleopOnePV2 extends LinearOpMode {
         double powershotspeed = .8;
         long sleep_time = 200;
 
-        double targetHeading = 0;
-        double allowableError = 20;
-        double autoturnSpeed = 1;
-
-        double allowableError2 = 1;
-        double autoturnSpeed2 = 0.25;
-
-
         waitForStart();
-
 
         while (opModeIsActive()) {
             drive.update();
-
-
-
-
-
             //telemetry.addData("horizontal encoder", robot.BackLeft.getCurrentPosition());
-                //telemetry.update();
-
-
-                if (gamepad1.right_bumper) {
-                    robot.Intake.setPower(1);
-                    robot.Pulley.setPower(-1);
-                } else if (gamepad1.left_bumper) {
-                    robot.Intake.setPower(-1);
-                    robot.Pulley.setPower(1);
-                } else{
-                    robot.Intake.setPower(0);
-                    robot.Pulley.setPower(0);
-                }
-
-                if (gamepad1.a) {
-                    robot.Wgoalservo.setPosition(0);
-                };
-                if (gamepad1.b) {
-                robot.Wgoalservo.setPosition(1);
-                };
-
-            if (gamepad1.back) {
-                gyro_offset = checkOrientation();
-            }
-
-            if (gamepad1.y) {
-                robot.WheelOutake.setPower(shooterspeed);
-
+            //telemetry.update();
+            if (gamepad1.right_bumper) {
                 robot.Intake.setPower(1);
                 robot.Pulley.setPower(-1);
-
-
+            } else if (gamepad1.left_bumper) {
+                robot.Intake.setPower(-1);
+                robot.Pulley.setPower(1);
+            } else{
+                robot.Intake.setPower(0);
+                robot.Pulley.setPower(0);
+            }
+            if (gamepad1.a) {
+                robot.Wgoalservo.setPosition(0);
+            };
+            if (gamepad1.b) {
+                robot.Wgoalservo.setPosition(1);
+            };
+            if (gamepad1.start) {
+                drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+            }
+            if (gamepad1.y) {
+                robot.WheelOutake.setPower(shooterspeed);
+                robot.Intake.setPower(1);
+                robot.Pulley.setPower(-1);
                 drive.setMotorPowers(0, 0, 0, 0);
-
-                getHeading();
-
-
-
-                while (getHeading() < targetHeading - allowableError || getHeading() > targetHeading + allowableError) {
-                    if (getHeading()>targetHeading + allowableError){
-                        drive.setMotorPowers(autoturnSpeed, autoturnSpeed, -autoturnSpeed, -autoturnSpeed);
-                    }
-                    if (getHeading()<targetHeading - allowableError) {
-                        drive.setMotorPowers(-autoturnSpeed, -autoturnSpeed, autoturnSpeed, autoturnSpeed);
-                    }
-                    }
-
-                while (getHeading() < targetHeading - allowableError2 || getHeading() > targetHeading + allowableError2) {
-                    if (getHeading()>targetHeading + allowableError){
-                        drive.setMotorPowers(autoturnSpeed2, autoturnSpeed2, -autoturnSpeed2, -autoturnSpeed2);
-                    }
-                    if (getHeading()<targetHeading - allowableError) {
-                        drive.setMotorPowers(-autoturnSpeed2, -autoturnSpeed2, autoturnSpeed2, autoturnSpeed2);
-                    }
-                }
-                drive.setMotorPowers(0, 0, 0, 0);
-
-                /*
                 Pose2d myPose = drive.getPoseEstimate();
-
                 Trajectory myTrajectory = drive.trajectoryBuilder(myPose)
-                        .lineToLinearHeading(new Pose2d(-5, 15, Math.toRadians(20)))
+                        .lineToLinearHeading(new Pose2d(-5, 48, Math.toRadians(0)))
                         .build();
-
                 drive.followTrajectory(myTrajectory);
-*/
-                    robot.Ring_gate.setPosition(.55);
-                    sleep(sleep_time);
-                    robot.Ring_gate.setPosition(.8);
-                    sleep(sleep_time);
-
-                    robot.Ring_gate.setPosition(.55);
-                    sleep(sleep_time);
-                    robot.Ring_gate.setPosition(.8);
-                    sleep(sleep_time);
-
-                    robot.Ring_gate.setPosition(.55);
-                    sleep(sleep_time);
-                    robot.Ring_gate.setPosition(.8);
-                    sleep(sleep_time);
-
-                    robot.Ring_gate.setPosition(.55);
-                    sleep(sleep_time);
-                    robot.Ring_gate.setPosition(.8);
-
-
-
-                }
-
-                if(gamepad1.dpad_up) {
-                    robot.Wgoalarm.setPower(1);
-                } else if(gamepad1.dpad_down){
-                    robot.Wgoalarm.setPower(-1);
-                } else{
-                    robot.Wgoalarm.setPower(0);
-                }
-
-                drive.setWeightedDrivePower(
-                        new Pose2d(
-                                -gamepad1.left_stick_y,
-                                -gamepad1.left_stick_x,
-                                -gamepad1.right_stick_x
-                        )
-                );
-
-                if (gamepad1.right_trigger > .5) {
-                    robot.WheelOutake.setPower(powershotspeed);
-                } else if (gamepad1.left_trigger > .5) {
-                    robot.WheelOutake.setPower(shooterspeed);
-                } else {
-                    robot.WheelOutake.setPower(0);
-                }
-
-                //manual ringgate
-                if (gamepad1.x) {
-                    robot.Ring_gate.setPosition(.55);
-                } else {
-                    robot.Ring_gate.setPosition(.8);
-                }
-
+                robot.Ring_gate.setPosition(.55);
+                sleep(sleep_time);
+                robot.Ring_gate.setPosition(.8);
+                sleep(sleep_time);
+                robot.Ring_gate.setPosition(.55);
+                sleep(sleep_time);
+                robot.Ring_gate.setPosition(.8);
+                sleep(sleep_time);
+                robot.Ring_gate.setPosition(.55);
+                sleep(sleep_time);
+                robot.Ring_gate.setPosition(.8);
+            }
+            if(gamepad1.dpad_up) {
+                robot.Wgoalarm.setPower(1);
+            } else if(gamepad1.dpad_down){
+                robot.Wgoalarm.setPower(-1);
+            } else{
+                robot.Wgoalarm.setPower(0);
+            }
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    )
+            );
+            if (gamepad1.right_trigger > .5) {
+                robot.WheelOutake.setPower(powershotspeed);
+            } else if (gamepad1.left_trigger > .5) {
+                robot.WheelOutake.setPower(shooterspeed);
+            } else {
+                robot.WheelOutake.setPower(0);
+            }
+            //manual ringgate
+            if (gamepad1.x) {
+                robot.Ring_gate.setPosition(.55);
+            } else {
+                robot.Ring_gate.setPosition(.8);
             }
         }
-    double getHeading( ) {
-// read the gyro
-        live_gyro_value =  checkOrientation();
-        return (live_gyro_value - gyro_offset);
     }
-    double checkOrientation() {
-// read the orientation of the robot
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        imu.getPosition();
-// and save the heading
-        double curHeading = angles.firstAngle;
-        return curHeading;
-    }
-    }
-
-
-
-
+}
