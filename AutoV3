@@ -111,30 +111,36 @@ public class AutoV3 extends LinearOpMode {
                 .forward(63)
                 .build();
         Trajectory one_traj2 = drive.trajectoryBuilder(one_traj1.end())
-                .strafeTo(new Vector2d(63, -17))
+                .strafeTo(new Vector2d(63, -12))
                 .build();
         Trajectory one_traj3 = drive.trajectoryBuilder(one_traj2.end(),true)
-                .splineTo(new Vector2d(53,-14), Math.toRadians(-220))
+                .splineTo(new Vector2d(38,-14), Math.toRadians(-220))
                 .build();
         Trajectory one_traj4 = drive.trajectoryBuilder(one_traj3.end())
-                .splineTo(new Vector2d(63, -17), Math.toRadians(0))
+                .splineTo(new Vector2d(63, -12), Math.toRadians(0))
                 .build();
         Trajectory one_traj5 = drive.trajectoryBuilder(one_traj4.end())
-                .lineToConstantHeading(new Vector2d(93, -22))
+                .lineToLinearHeading(new Pose2d(93, -16, Math.toRadians(0)))
                 .build();
         Trajectory one_traj6 = drive.trajectoryBuilder(one_traj5.end())
-                .strafeRight(6)
+                .back(6)
                 .build();
         Trajectory one_traj7 = drive.trajectoryBuilder(one_traj6.end())
-                .lineToLinearHeading(new Pose2d(28, -36, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(37, -30, Math.toRadians(180)))
                 .build();
+
+        Trajectory one_traj7_0 = drive.trajectoryBuilder(one_traj7.end())
+                .forward(6)
+                .build();
+
+
         /*Trajectory one_traj8 = drive.trajectoryBuilder(one_traj7.end())
                 .strafeTo(new Vector2d(20, -17))
                 .build();
 
          */
-        Trajectory one_traj9 = drive.trajectoryBuilder(one_traj7.end())
-                .lineToLinearHeading(new Pose2d(99, -30, Math.toRadians(0)))
+        Trajectory one_traj9 = drive.trajectoryBuilder(one_traj7_0.end())
+                .lineToLinearHeading(new Pose2d(85, -20, Math.toRadians(0)))
                 .build();
         Trajectory one_traj10 = drive.trajectoryBuilder(one_traj9.end())
                 .lineToConstantHeading(new Vector2d(75,-50))
@@ -272,53 +278,87 @@ public class AutoV3 extends LinearOpMode {
         }
 
         if (position == SkystoneDeterminationPipeline.RingPosition.ONE) {
+
             drive.followTrajectory(one_traj1);
             drive.followTrajectory(one_traj2);
-
+            //robot drives to shooting positions
             robot.Backservo.setPosition(.75);
 
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
-            sleep(500);
+            sleep(200);
 
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
-            sleep(500);
+            sleep(200);
 
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
+            robot.Ring_gate.setPosition(.8);
+
+            sleep(200);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
 
             robot.WheelOutake.setPower(0);
-
-            robot.Intake.setPower(-1);
+            //robot shoots rings
+            robot.Intake.setPower(1);
             robot.Pulley.setPower(-1);
 
+            //robot moves back to get ring
             drive.followTrajectory(one_traj3);
             sleep(1000);
             robot.WheelOutake.setPower(1);
             sleep(1000);
             drive.followTrajectory(one_traj4);
 
+            //robot shoots ring
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
 
             robot.WheelOutake.setPower(0);
             robot.Intake.setPower(0);
             robot.Pulley.setPower(0);
 
+            //robot goes to drop zone
             drive.followTrajectory(one_traj5);
 
-            robot.Wgoalservo.setPosition(1);
-            sleep(500);
+            //robot drops wobble goal
+            telemetry.addData("1","1");
+            telemetry.update();
+            robot.Wgoalarm.setTargetPosition(robot.Wgoalarm.getCurrentPosition() - 1700);
+            telemetry.addData("2","1");
+            telemetry.update();
+            robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            telemetry.addData("3","1");
+            telemetry.update();
+            robot.Wgoalarm.setPower(-1);
+            telemetry.addData("4","1");
+            telemetry.update();
+            while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
+                telemetry.addData("5","1");
+                telemetry.update();
+            }
+            telemetry.addData("6","1");
+            telemetry.update();
+            robot.Wgoalarm.setPower(0);
+            telemetry.addData("7","1");
+            telemetry.update();
 
+            robot.Wgoalservo.setPosition(1);
+            sleep(1000);
+            //robot goes to second wobble goal
             drive.followTrajectory(one_traj6);
             drive.followTrajectory(one_traj7);
+            drive.followTrajectory(one_traj7_0);
             //drive.followTrajectory(one_traj8);
 
+            //robot gets wobble goal
             robot.Wgoalservo.setPosition(0);
             sleep(1000);
 
@@ -449,7 +489,7 @@ public class AutoV3 extends LinearOpMode {
         static final int REGION_HEIGHT = 40;
 
         final int FOUR_RING_THRESHOLD = 147;
-        final int ONE_RING_THRESHOLD = 130;
+        final int ONE_RING_THRESHOLD = 128;
 
         Point region1_pointA = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x,
