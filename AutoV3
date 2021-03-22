@@ -140,9 +140,12 @@ public class AutoV3 extends LinearOpMode {
 
          */
         Trajectory one_traj9 = drive.trajectoryBuilder(one_traj7_0.end())
-                .lineToLinearHeading(new Pose2d(85, -20, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(88, -20, Math.toRadians(0)))
                 .build();
-        Trajectory one_traj10 = drive.trajectoryBuilder(one_traj9.end())
+        Trajectory one_traj9_0 = drive.trajectoryBuilder(one_traj9.end())
+                .back(6)
+                .build();
+        Trajectory one_traj10 = drive.trajectoryBuilder(one_traj9_0.end())
                 .lineToConstantHeading(new Vector2d(75,-50))
                 .build();
 
@@ -252,6 +255,7 @@ public class AutoV3 extends LinearOpMode {
             robot.Wgoalarm.setTargetPosition(robot.Wgoalarm.getCurrentPosition() - 1700);
             robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.Wgoalarm.setPower(-1);
+            sleep(10);
             while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
             }
             robot.Wgoalarm.setPower(0);
@@ -311,7 +315,6 @@ public class AutoV3 extends LinearOpMode {
 
             //robot moves back to get ring
             drive.followTrajectory(one_traj3);
-            sleep(1000);
             robot.WheelOutake.setPower(1);
             sleep(1000);
             drive.followTrajectory(one_traj4);
@@ -329,8 +332,7 @@ public class AutoV3 extends LinearOpMode {
             drive.followTrajectory(one_traj5);
 
             //robot drops wobble goal
-            telemetry.addData("1","1");
-            telemetry.update();
+
             robot.Wgoalarm.setTargetPosition(robot.Wgoalarm.getCurrentPosition() - 1700);
             telemetry.addData("2","1");
             telemetry.update();
@@ -338,17 +340,19 @@ public class AutoV3 extends LinearOpMode {
             telemetry.addData("3","1");
             telemetry.update();
             robot.Wgoalarm.setPower(-1);
-            telemetry.addData("4","1");
-            telemetry.update();
-            while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
-                telemetry.addData("5","1");
+            if (robot.Wgoalarm.isBusy()){
+                telemetry.addData("is","busy");
+                telemetry.update();
+            } else {
+                telemetry.addData("is","not so busy");
                 telemetry.update();
             }
-            telemetry.addData("6","1");
-            telemetry.update();
+            sleep(10);
+
+            while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
+
+            }
             robot.Wgoalarm.setPower(0);
-            telemetry.addData("7","1");
-            telemetry.update();
 
             robot.Wgoalservo.setPosition(1);
             sleep(1000);
@@ -366,6 +370,8 @@ public class AutoV3 extends LinearOpMode {
 
             robot.Wgoalservo.setPosition(1);
             sleep(500);
+
+            drive.followTrajectory(one_traj9_0);
 
             drive.followTrajectory(one_traj10);
 
