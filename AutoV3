@@ -450,6 +450,7 @@ public class AutoV3 extends LinearOpMode {
         robot.Wgoalarm.setTargetPosition(robot.Wgoalarm.getCurrentPosition() + 1700);
         robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.Wgoalarm.setPower(1);
+        sleep(10);
         while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
         }
         robot.Wgoalarm.setPower(0);
