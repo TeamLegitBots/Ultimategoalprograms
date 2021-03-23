@@ -155,7 +155,7 @@ public class AutoV3 extends LinearOpMode {
                 .forward(65)
                 .build();
         Trajectory four_traj_2 = drive.trajectoryBuilder(four_traj_1.end())
-                .strafeTo(new Vector2d(65, -17))
+                .strafeTo(new Vector2d(65, -12))
                 .build();
 
         Trajectory four_traj_3 = drive.trajectoryBuilder(four_traj_2.end(),true)
@@ -163,11 +163,11 @@ public class AutoV3 extends LinearOpMode {
                 .build();
 
         Trajectory four_traj_4 = drive.trajectoryBuilder(four_traj_3.end())
-                .back(7,
+                .back(15,
                         new MinVelocityConstraint(
                                 Arrays.asList(
                                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                        new MecanumVelocityConstraint(15, DriveConstants.TRACK_WIDTH)
+                                        new MecanumVelocityConstraint(7, DriveConstants.TRACK_WIDTH)
                                 )
                         ),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)
@@ -175,7 +175,7 @@ public class AutoV3 extends LinearOpMode {
                 .build();
 
         Trajectory four_traj_5 = drive.trajectoryBuilder(four_traj_4.end())
-                .lineToConstantHeading(new Vector2d(65, -17))
+                .lineToConstantHeading(new Vector2d(65, -12))
                 .build();
 
         Trajectory four_traj0 = drive.trajectoryBuilder(four_traj_5.end())
@@ -187,7 +187,7 @@ public class AutoV3 extends LinearOpMode {
                         new MinVelocityConstraint(
                                 Arrays.asList(
                                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                        new MecanumVelocityConstraint(25, DriveConstants.TRACK_WIDTH)
+                                        new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
                                 )
                         ),
                         new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)
@@ -195,10 +195,10 @@ public class AutoV3 extends LinearOpMode {
 
                 .build();
         Trajectory four_traj2 = drive.trajectoryBuilder((four_traj1.end()))
-                .lineToConstantHeading(new Vector2d(65,-17))
+                .lineToConstantHeading(new Vector2d(65,-12))
                 .build();
         Trajectory four_traj3 = drive.trajectoryBuilder(four_traj2.end())
-                .lineToConstantHeading(new Vector2d(117, 0))
+                .lineToConstantHeading(new Vector2d(117, 10))
                 .build();
         Trajectory four_traj4 = drive.trajectoryBuilder(four_traj3.end())
                 .lineToConstantHeading(new Vector2d(87, -22))
@@ -384,25 +384,29 @@ public class AutoV3 extends LinearOpMode {
             drive.followTrajectory(four_traj_1);
             drive.followTrajectory(four_traj_2);//Drives to optimal shooting range
 
-            robot.Backservo.setPosition(.75);
 
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
-            sleep(500);
+            sleep(200);
 
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
-            sleep(500);
+            sleep(200);
 
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
+            robot.Ring_gate.setPosition(.8);
+            sleep(200);
+
+            robot.Ring_gate.setPosition(.55);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
 
             robot.WheelOutake.setPower(0);
 
-            robot.Intake.setPower(-1);  //shoot rings
+            robot.Intake.setPower(1);  //shoot rings
             robot.Pulley.setPower(-1);
 
             drive.followTrajectory(four_traj_3); //splines to get one ring
@@ -412,7 +416,7 @@ public class AutoV3 extends LinearOpMode {
             drive.followTrajectory(four_traj_5);
 
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
 
             robot.WheelOutake.setPower(0);
@@ -425,17 +429,17 @@ public class AutoV3 extends LinearOpMode {
             drive.followTrajectory(four_traj2);
 
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
-            sleep(500);
+            sleep(200);
 
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
-            sleep(500);
+            sleep(200);
 
             robot.Ring_gate.setPosition(.55);
-            sleep(500);
+            sleep(200);
             robot.Ring_gate.setPosition(.8);
 
             robot.WheelOutake.setPower(0);
@@ -443,6 +447,15 @@ public class AutoV3 extends LinearOpMode {
             robot.Pulley.setPower(0);
 
             drive.followTrajectory(four_traj3);
+
+            robot.Wgoalarm.setTargetPosition(robot.Wgoalarm.getCurrentPosition() - 1700);
+            robot.Wgoalarm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.Wgoalarm.setPower(-1);
+            sleep(10);
+            while (robot.Wgoalarm.isBusy() && opModeIsActive()) {
+            }
+            robot.Wgoalarm.setPower(0);
+
             robot.Wgoalservo.setPosition(1);
             sleep(500);
             drive.followTrajectory(four_traj4);
