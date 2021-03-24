@@ -40,7 +40,7 @@ public class TeleopTwoP extends LinearOpMode {
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         double shooterspeed = .95;
-        double powershotspeed = .8;
+        double powershotspeed = .75;
         long sleep_time = 200;
 
         waitForStart();
@@ -133,7 +133,7 @@ public class TeleopTwoP extends LinearOpMode {
 
 
                 Trajectory powershot1 = drive.trajectoryBuilder(myPose)
-                        .lineToLinearHeading(new Pose2d(-3, 10, Math.toRadians(5)),
+                        .lineToLinearHeading(new Pose2d(-3, 10, Math.toRadians(7)),
                                 new MinVelocityConstraint(
                                         Arrays.asList(
                                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
@@ -143,6 +143,7 @@ public class TeleopTwoP extends LinearOpMode {
                                 new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)
                         )
                         .build();
+                /*
                 Trajectory powershot2 = drive.trajectoryBuilder(powershot1.end())
                         .strafeTo(new Vector2d(0,25),
                                 new MinVelocityConstraint(
@@ -165,17 +166,17 @@ public class TeleopTwoP extends LinearOpMode {
                                 new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL)
                         )
                         .build();
-
+*/
                 drive.followTrajectory(powershot1);  // strafe and shoot right powershot
                 robot.Ring_gate.setPosition(.55);
                 sleep(200);
                 robot.Ring_gate.setPosition(.8);
-                drive.turn(Math.toRadians(10));
+                drive.turn(Math.toRadians(8));
                 //drive.followTrajectory(powershot2);   //strafe and shoot middle powershot
                 robot.Ring_gate.setPosition(.55);
                 sleep(200);
                 robot.Ring_gate.setPosition(.8);
-                drive.turn(Math.toRadians(10));
+                drive.turn(Math.toRadians(7));
                // drive.followTrajectory(powershot3);  //strafe and shoot left powershot
                 robot.Ring_gate.setPosition(.55);
                 sleep(200);
