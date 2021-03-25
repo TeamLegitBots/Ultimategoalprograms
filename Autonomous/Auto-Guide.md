@@ -7,6 +7,24 @@ Our first autonomous code developed during the end of 2020 in December. We used 
 scan the ring's starter stack.
 
 ## AutoV2
-Our second version of autonomous made for our first qualifer. We implemented a pathfinding program for more accurate movement (Roadrunner)
+Our second version of autonomous designed for our first qualifer. We implemented a pathfinding program for more accurate movement,(Roadrunner) 0
 
 ## AutoV3
+Our third and last autonomous code developed for our second qualifier. Most of this version is quite similar to AutoV2 except movement is much faster and more accurate.
+
+
+
+
+
+
+
+
+
+#### Roadrunner 
+We used roadrunner to help us code our robot for more precise movement. Here are some links which we used:
+https://github.com/acmerobotics
+https://acme-robotics.gitbook.io/road-runner/quickstart/introduction
+
+#### OpenCV
+We mainly used Easyopencv to detect the starter stack. Credit to Wizards.exe for making the code.
+https://github.com/OpenFTC/EasyOpenCV
