@@ -4,10 +4,10 @@ There are 3 versions of our code, Auto V1,V2, and V3
 
 ## AutoV1
 Our first autonomous code developed during the end of 2020 in December. We used three odometry pods on the robot to code movement on the robot. We also started using OpenCV to 
-scan the ring's starter stack.
+scan the ring's starter stack. It wasn't that accurate but was good enough for the start of the season.
 
 ## AutoV2
-Our second version of autonomous designed for our first qualifer. We implemented a pathfinding program for more accurate movement,(Roadrunner) 0
+Our second version of autonomous designed for our first qualifer. We implemented a pathfinding program for more accurate movement,(Roadrunner) and are still using object detection. This version is slower and less accurate than V3.
 
 ## AutoV3
 Our third and last autonomous code developed for our second qualifier. Most of this version is quite similar to AutoV2 except movement is much faster and more accurate.
