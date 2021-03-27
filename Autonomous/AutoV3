@@ -84,7 +84,7 @@ public class AutoV3 extends LinearOpMode {
 
 //no ring trajectories
         Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(0, 0)) //trajectory to go to shooting position
-                .splineTo(new Vector2d(63, -17), 0)
+                .splineTo(new Vector2d(63, -25), 0) //y as -17
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
                 .lineToLinearHeading(new Pose2d(80, 0, Math.toRadians(90))) //trajectory to go to dropzone
@@ -111,22 +111,22 @@ public class AutoV3 extends LinearOpMode {
                 .forward(63)
                 .build();
         Trajectory one_traj2 = drive.trajectoryBuilder(one_traj1.end()) //strafes to shooting position
-                .strafeTo(new Vector2d(63, -12))
+                .strafeTo(new Vector2d(63, -19))
                 .build();
         Trajectory one_traj3 = drive.trajectoryBuilder(one_traj2.end(),true) //goes back to get one ring
                 .splineTo(new Vector2d(38,-14), Math.toRadians(-220))
                 .build();
         Trajectory one_traj4 = drive.trajectoryBuilder(one_traj3.end()) //goes to shooting position
-                .splineTo(new Vector2d(63, -12), Math.toRadians(0))
+                .splineTo(new Vector2d(63, -19), Math.toRadians(0))
                 .build();
         Trajectory one_traj5 = drive.trajectoryBuilder(one_traj4.end())  //trajectory for 1st dropzone
-                .lineToLinearHeading(new Pose2d(93, -16, Math.toRadians(0))) 
+                .lineToLinearHeading(new Pose2d(93, -16, Math.toRadians(0)))
                 .build();
         Trajectory one_traj6 = drive.trajectoryBuilder(one_traj5.end()) //trajectory to make sure that wobble goal is in dropzone
                 .back(6)
                 .build();
         Trajectory one_traj7 = drive.trajectoryBuilder(one_traj6.end()) //trajectory to go to 2nd wobble goal
-        
+
                 .lineToLinearHeading(new Pose2d(37, -30, Math.toRadians(180)))
                 .build();
 
@@ -152,18 +152,18 @@ public class AutoV3 extends LinearOpMode {
 
 
         //four ring trajectories
-        Trajectory four_traj_1 = drive.trajectoryBuilder(new Pose2d(0, 0))
+        Trajectory four_traj_1 = drive.trajectoryBuilder(new Pose2d(0, 0)) //go to launch line
                 .forward(65)
                 .build();
-        Trajectory four_traj_2 = drive.trajectoryBuilder(four_traj_1.end())
-                .strafeTo(new Vector2d(65, -12))
+        Trajectory four_traj_2 = drive.trajectoryBuilder(four_traj_1.end()) //strafe to shooting pos
+                .strafeTo(new Vector2d(65, -19)) //y as -12
                 .build();
 
-        Trajectory four_traj_3 = drive.trajectoryBuilder(four_traj_2.end(),true)
+        Trajectory four_traj_3 = drive.trajectoryBuilder(four_traj_2.end(),true) //strafing in front rings
                 .strafeTo(new Vector2d(65,-14))
                 .build();
 
-        Trajectory four_traj_4 = drive.trajectoryBuilder(four_traj_3.end())
+        Trajectory four_traj_4 = drive.trajectoryBuilder(four_traj_3.end()) //goes to pick up ring
                 .back(15,
                         new MinVelocityConstraint(
                                 Arrays.asList(
@@ -175,15 +175,15 @@ public class AutoV3 extends LinearOpMode {
                 )
                 .build();
 
-        Trajectory four_traj_5 = drive.trajectoryBuilder(four_traj_4.end())
-                .lineToConstantHeading(new Vector2d(65, -12))
+        Trajectory four_traj_5 = drive.trajectoryBuilder(four_traj_4.end()) //goes to shooting pos
+                .lineToConstantHeading(new Vector2d(65, -19))
                 .build();
 
-        Trajectory four_traj0 = drive.trajectoryBuilder(four_traj_5.end())
+        Trajectory four_traj0 = drive.trajectoryBuilder(four_traj_5.end()) //goes in front of the rings
                 .strafeTo(new Vector2d(65,-14))
                 .build();
 
-        Trajectory four_traj1 = drive.trajectoryBuilder(four_traj0.end())
+        Trajectory four_traj1 = drive.trajectoryBuilder(four_traj0.end()) //goes to pick up rings
                 .back(30,
                         new MinVelocityConstraint(
                                 Arrays.asList(
@@ -195,18 +195,18 @@ public class AutoV3 extends LinearOpMode {
                 )
 
                 .build();
-        Trajectory four_traj2 = drive.trajectoryBuilder((four_traj1.end()))
-                .lineToConstantHeading(new Vector2d(65,-12))
+        Trajectory four_traj2 = drive.trajectoryBuilder((four_traj1.end())) //goes to shoot
+                .lineToConstantHeading(new Vector2d(65,-19))
                 .build();
-        Trajectory four_traj3 = drive.trajectoryBuilder(four_traj2.end())
+        Trajectory four_traj3 = drive.trajectoryBuilder(four_traj2.end()) //deposits wobble goal
                 .lineToConstantHeading(new Vector2d(117, 10))
                 .build();
-        Trajectory four_traj4 = drive.trajectoryBuilder(four_traj3.end())
-                .lineToConstantHeading(new Vector2d(87, -22))
+        Trajectory four_traj4 = drive.trajectoryBuilder(four_traj3.end()) //parks on launch line
+                .lineToConstantHeading(new Vector2d(87, -22))//x as 87
                 .build();
 
 //make sure servo closes in the beginning
-    robot.Wgoalservo.setPosition(0);
+        robot.Wgoalservo.setPosition(0);
         waitForStart();
         drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
 
@@ -225,7 +225,7 @@ public class AutoV3 extends LinearOpMode {
         robot.WheelOutake.setPower(1);
 
         sleep(2000);
-    //no-ring situation
+        //no-ring situation
         if (position == SkystoneDeterminationPipeline.RingPosition.NONE) {
             drive.followTrajectory(traj1);   //drives to shooting position
             robot.WheelOutake.setPower(shootingspeed); //shoots rings
@@ -264,7 +264,7 @@ public class AutoV3 extends LinearOpMode {
             robot.Wgoalservo.setPosition(1);
             sleep(1000);                   //drops wgoal
 
-            drive.followTrajectory(traj3);  
+            drive.followTrajectory(traj3);
 
             drive.followTrajectory(traj4); //gets 2nd wobble goal
 
@@ -283,11 +283,11 @@ public class AutoV3 extends LinearOpMode {
         }
 //one ring situation
         if (position == SkystoneDeterminationPipeline.RingPosition.ONE) {
-            
-            drive.followTrajectory(one_traj1);   
+
+            drive.followTrajectory(one_traj1);
             drive.followTrajectory(one_traj2);   //goes to shooting position
-           
-           //robot shoots rings
+
+            //robot shoots rings
             robot.Backservo.setPosition(.75);
 
             robot.Ring_gate.setPosition(.55);
