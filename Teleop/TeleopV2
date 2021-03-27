@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.Arrays;
 
-@TeleOp(name = "TeleopV2")
+@TeleOp(name = "ASTeleopTwoP")
 //@Disabled
 public class TeleopV2 extends LinearOpMode {
     LegitbotV1 robot = new LegitbotV1();
@@ -105,7 +105,7 @@ public class TeleopV2 extends LinearOpMode {
                             -gamepad1.right_stick_x * sensitivity
                     )
             );
-            if (gamepad2.right_bumper) {    //turn on shooter to power shot shooting speed
+            if (gamepad2.right_trigger>.5) {    //turn on shooter to power shot shooting speed
                 robot.WheelOutake.setPower(powershotspeed);
             } else
             if (gamepad2.left_stick_y < -.5) {     //turn on shooter to regular shooting speed
@@ -178,6 +178,10 @@ public class TeleopV2 extends LinearOpMode {
                 robot.Ring_gate.setPosition(.8);
                 drive.turn(Math.toRadians(7));
                // drive.followTrajectory(powershot3);  //strafe and shoot left powershot
+                robot.Ring_gate.setPosition(.55);
+                sleep(200);
+                robot.Ring_gate.setPosition(.8);
+                sleep(200);
                 robot.Ring_gate.setPosition(.55);
                 sleep(200);
                 robot.Ring_gate.setPosition(.8);
