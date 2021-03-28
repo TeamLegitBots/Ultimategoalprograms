@@ -6,3 +6,7 @@ Code is organized in different folders with their own readme. Look for them to g
 The Autnomous folder has all our autonomous code over the season. This is pre-programmed code where the robot does tasks by itself
 ### Teleop
 The Teleop folder has all our dedicated teleop code over the season. This is code dedicated for driving the robot
+### Odometry and Roadrunner
+These two folders have the necessary constants and methods needed for autonomous
+### Gradle 
+Gradle changes needed for code to work on android studios
