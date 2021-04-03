@@ -39,10 +39,9 @@ public class TeleopV2 extends LinearOpMode {
 */
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        double shooterspeed = .95;
-        double powershotspeed = .75;
+        double shooterspeed = .75;
+        double powershotspeed = .7;
         long sleep_time = 200;
-
         waitForStart();
 
         while (opModeIsActive()) {
@@ -57,6 +56,8 @@ public class TeleopV2 extends LinearOpMode {
                 robot.Intake.setPower(0);
                 robot.Pulley.setPower(0);
             }
+
+
             //close WGarm servo
             if (gamepad2.a) {
                 robot.Wgoalservo.setPosition(0);
@@ -65,21 +66,29 @@ public class TeleopV2 extends LinearOpMode {
             if (gamepad2.b) {
                 robot.Wgoalservo.setPosition(1);
             };
+            //reset encoders
+            if (gamepad1.b) {
+                drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+            }
             // automatic shooting
-            if (gamepad2.y) {
-                drive.setMotorPowers(0,0,0,0);
+            if (gamepad1.y) {
                 robot.WheelOutake.setPower(shooterspeed);
-
+                robot.Intake.setPower(1);
+                robot.Pulley.setPower(-1);
+                drive.setMotorPowers(0, 0, 0, 0);
+                Pose2d myPose = drive.getPoseEstimate();
+                Trajectory myTrajectory = drive.trajectoryBuilder(myPose)
+                        .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(0)))
+                        .build();
+                drive.followTrajectory(myTrajectory);
                 robot.Ring_gate.setPosition(.55);
                 sleep(sleep_time);
                 robot.Ring_gate.setPosition(.8);
                 sleep(sleep_time);
-
                 robot.Ring_gate.setPosition(.55);
                 sleep(sleep_time);
                 robot.Ring_gate.setPosition(.8);
                 sleep(sleep_time);
-
                 robot.Ring_gate.setPosition(.55);
                 sleep(sleep_time);
                 robot.Ring_gate.setPosition(.8);
