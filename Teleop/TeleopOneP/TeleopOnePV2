@@ -30,8 +30,8 @@ public class TeleopOnePV2 extends LinearOpMode {
 */
         robot.Wgoalarm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        double shooterspeed = .95;
-        double powershotspeed = .8;
+        double shooterspeed = .75;
+        double powershotspeed = .7;
         long sleep_time = 200;
 
         waitForStart();
