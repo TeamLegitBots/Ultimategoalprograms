@@ -7,10 +7,10 @@ Our first autonomous code developed during the end of 2020 in December. We used 
 scan the ring's starter stack. It wasn't that accurate but was good enough for the start of the season.
 
 ## AutoV2
-Our second version of autonomous designed for our first qualifer. We implemented a pathfinding program for more accurate movement,(Roadrunner) and are still using object detection. This version is slower and less accurate than V3.
+The second version of autonomous designed for our first qualifer. We implemented a pathfinding program for more accurate movement,(Roadrunner) and are still using object detection. This version is slower and less accurate than V3.
 
 ## AutoV3
-Our third and last autonomous code developed for our second qualifier. Most of this version is quite similar to AutoV2 except movement is much faster and more accurate.
+The third and last autonomous code developed for our second qualifier. Most of this version is quite similar to AutoV2 except movement is much faster and more accurate.
 
 
 
